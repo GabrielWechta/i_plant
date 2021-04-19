@@ -25,7 +25,7 @@ data class Plant(
 
     /** Death Part */
     @Nullable
-    var death_date: String,
+    var death_date: LocalDateTime,
     @Nullable
     var death_cause: String
 )

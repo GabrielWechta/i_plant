@@ -14,5 +14,5 @@ interface PlantDao {
     suspend fun update(plant: Plant)
 
     @Query("SELECT * FROM plant_table ORDER BY id ASC")
-    fun getAllById() : Flow<List<Plant>>
+    fun getAllOrderedById() : Flow<List<Plant>>
 }

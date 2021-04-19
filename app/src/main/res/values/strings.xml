@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">I Plan(t)</string>
+    <string name="hint_plant">Plant…</string>
+    <string name="button_save">Save</string>
+    <string name="empty_not_saved">Plant in not saved because it is empty.</string>
+    <string name="add_plant">Add plant</string>
+
 </resources>
