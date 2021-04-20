@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
             data?.getStringExtra(NewPlantActivity.EXTRA_REPLY)?.let {
                 val plantName = it
                 val plant = Plant(
-                    2,
+                    0,
                     plantName,
                     "dfg",
                     "hjk",
