@@ -1,6 +1,8 @@
-package com.iplant
+package com.iplant.ui
 
 import androidx.lifecycle.*
+import com.iplant.data.Plant
+import com.iplant.data.PlantRepository
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 

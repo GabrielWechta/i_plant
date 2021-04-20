@@ -1,11 +1,13 @@
-package com.iplant
+package com.iplant.data
 
+import android.os.Parcelable
 import androidx.annotation.Nullable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.time.LocalDate
+import kotlinx.android.parcel.Parcelize
 import java.time.LocalDateTime
 
+@Parcelize
 @Entity(tableName = "plant_table")
 data class Plant(
     /** Specification Part */
@@ -28,4 +30,4 @@ data class Plant(
     var death_date: LocalDateTime,
     @Nullable
     var death_cause: String
-)
+) : Parcelable

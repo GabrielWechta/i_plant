@@ -1,7 +1,7 @@
-package com.iplant
+package com.iplant.data
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.iplant.data.Plant
 import kotlinx.coroutines.flow.Flow
 
 @Dao

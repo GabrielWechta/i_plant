@@ -1,4 +1,4 @@
-package com.iplant
+package com.iplant.data
 
 import androidx.room.TypeConverter
 import java.time.LocalDateTime

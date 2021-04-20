@@ -1,11 +1,10 @@
-package com.iplant
+package com.iplant.data
 
 import android.content.Context
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Database(entities = [Plant::class], version = 1, exportSchema = false)
@@ -56,7 +55,11 @@ abstract class PlantDatabase : RoomDatabase() {
                     context.applicationContext,
                     PlantDatabase::class.java,
                     "plant_database"
-                ).addCallback(PlantDatabaseCallback(scope))
+                ).addCallback(
+                    PlantDatabaseCallback(
+                        scope
+                    )
+                )
                     .build()
                 INSTANCE = instance
                 instance
