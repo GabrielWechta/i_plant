@@ -5,6 +5,7 @@ buildscript {
         google()
         jcenter()
         mavenCentral()
+
     }
     dependencies {
         classpath "com.android.tools.build:gradle:4.1.2"
@@ -19,6 +20,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -34,6 +36,8 @@ ext {
     lifecycleVersion = '2.2.0'
     materialVersion = '1.2.1'
     transformationLayoutVersion = '1.0.8'
+    materialTextFieldVersion = '1.0.7'
+    numberPickerVersion = '2.4.12'
     roomVersion = '2.2.5'
     // testing
     junitVersion = '4.13.1'
