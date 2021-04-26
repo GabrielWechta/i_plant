@@ -5,15 +5,15 @@
     android:layout_height="match_parent"
     android:background="?android:attr/colorBackground"
     android:orientation="vertical"
+
     android:padding="16dp">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
+        style="@style/ActivityHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:layout_margin="16dp"
-        android:text="@string/new_plant"
-        android:textSize="26sp" />
+        android:text="@string/new_plant" />
 
 
     <com.github.florent37.materialtextfield.MaterialTextField
@@ -21,11 +21,11 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         app:mtf_animationDuration="100"
+        app:mtf_backgroundColor="?colorPrimaryVariant"
         app:mtf_cardCollapsedHeight="4dp"
         app:mtf_image="@drawable/ic_plant"
-        app:mtf_labelColor="@color/white"
-        app:mtf_backgroundColor="@color/light_gray"
-        app:mtf_openKeyboardOnFocus="true">
+        app:mtf_labelColor="?android:textColor"
+        app:mtf_openKeyboardOnFocus="true" >
 
         <EditText
             android:id="@+id/edit_plant"
@@ -36,33 +36,132 @@
 
     </com.github.florent37.materialtextfield.MaterialTextField>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal">
+
+        <com.github.florent37.materialtextfield.MaterialTextField
+            android:id="@+id/mtf_common_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_margin="8dp"
+            android:layout_toStartOf="@+id/autocomplete_button"
+            app:mtf_animationDuration="100"
+            app:mtf_backgroundColor="?colorPrimaryVariant"
+            app:mtf_cardCollapsedHeight="4dp"
+            app:mtf_labelColor="?android:textColor"
+            app:mtf_openKeyboardOnFocus="true" >
+
+            <EditText
+                android:id="@+id/edit_common_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/common_name"
+                android:textSize="18sp" />
+
+        </com.github.florent37.materialtextfield.MaterialTextField>
+
+        <Button
+            android:id="@+id/autocomplete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/mtf_common_name"
+
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="8dp"
+            android:text="@string/autocomplete" />
+    </RelativeLayout>
+
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp" >
+        android:layout_margin="8dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|start"
             android:text="@string/days_between_watering"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
 
         <com.shawnlin.numberpicker.NumberPicker
             android:layout_width="100dp"
             android:layout_height="50dp"
             android:layout_gravity="center_vertical|end"
-            app:np_orientation="horizontal"
-            app:np_textColor="@color/light_gray"
-            app:np_selectedTextColor="@color/white"
-            app:np_dividerColor="@color/light_gray"
+            app:np_dividerColor="?android:textColor"
             app:np_dividerType="underline"
             app:np_itemSpacing="15dp"
-            app:np_min="1"
             app:np_max="90"
-            />
+            app:np_min="1"
+            app:np_orientation="horizontal"
+            app:np_selectedTextColor="?android:textColor"
+            app:np_textColor="?android:textColor" />
     </FrameLayout>
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|start"
+            android:text="@string/days_between_fertilizing"
+            android:textSize="18sp" />
+
+        <com.shawnlin.numberpicker.NumberPicker
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical|end"
+            app:np_dividerColor="?android:textColor"
+            app:np_dividerType="underline"
+            app:np_itemSpacing="15dp"
+            app:np_max="90"
+            app:np_min="1"
+            app:np_orientation="horizontal"
+            app:np_selectedTextColor="?android:textColor"
+            app:np_textColor="?android:textColor" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|start"
+            android:text="@string/days_between_photographing"
+            android:textSize="18sp" />
+
+        <com.shawnlin.numberpicker.NumberPicker
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_vertical|end"
+            app:np_dividerColor="?android:textColor"
+            app:np_dividerType="underline"
+            app:np_itemSpacing="15dp"
+            app:np_max="90"
+            app:np_min="1"
+            app:np_orientation="horizontal"
+            app:np_selectedTextColor="?android:textColor"
+            app:np_textColor="?android:textColor" />
+    </FrameLayout>
+
+    <EditText
+        android:id="@+id/edit_notes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginVertical="16dp"
+        android:hint="@string/notes"
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/button_save"

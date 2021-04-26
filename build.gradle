@@ -31,6 +31,7 @@ ext {
     activityVersion = '1.1.0'
     appCompatVersion = '1.2.0'
     constraintLayoutVersion = '2.0.2'
+    recyclerSelectionVersion = '28.0.0'
     coreTestingVersion = '2.1.0'
     coroutines = '1.3.9'
     lifecycleVersion = '2.2.0'

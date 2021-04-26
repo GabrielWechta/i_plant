@@ -10,9 +10,8 @@ import com.iplant.databinding.RecyclerviewItemBinding
 import com.skydoves.transformationlayout.TransformationLayout
 
 class PlantListAdapter(private val clickListener: PlantClickListener) :
-    ListAdapter<Plant, PlantListAdapter.PlantViewHolder>(
-        PlantsComparator()
-    ) {
+    ListAdapter<Plant, PlantListAdapter.PlantViewHolder>(PlantsComparator()) {
+
     interface PlantClickListener {
         fun onPlantClick(plantItem: TransformationLayout, plant: Plant)
     }
@@ -28,11 +27,16 @@ class PlantListAdapter(private val clickListener: PlantClickListener) :
         holder.bind(current)
     }
 
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
     inner class PlantViewHolder(private val binding: RecyclerviewItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(plant: Plant) {
             binding.apply {
-                textView.text = plant.caressing_name
+                cardNick.text = plant.caressing_name
+                cardCommonName.text = plant.common_name
             }
             itemView.setOnClickListener {
                 clickListener.onPlantClick(it as TransformationLayout, plant)

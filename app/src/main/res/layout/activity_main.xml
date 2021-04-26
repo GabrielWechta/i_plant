@@ -7,31 +7,50 @@
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:padding="@dimen/big_padding"
-        tools:listitem="@layout/recyclerview_item" />
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:text="@string/your_plants"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="16dp"
+            style="@style/ActivityHeader"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:paddingHorizontal="16dp"
+            tools:listitem="@layout/recyclerview_item" />
+    </LinearLayout>
+
 
     <com.skydoves.transformationlayout.TransformationLayout
         android:id="@+id/transformation_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        app:transformation_containerColor="?android:attr/colorBackground"
+
         app:transformation_duration="550"
         app:transformation_fadeMode="cross">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
+            app:backgroundTint="@color/pink"
+            android:tint="@color/text_green"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:backgroundTint="@color/dark_green"
             android:src="@drawable/ic_add"
-            app:borderWidth="0dp" />
+            app:borderWidth="0dp"
+            android:contentDescription="Add" />
     </com.skydoves.transformationlayout.TransformationLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

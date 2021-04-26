@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="dark_green">#004D40</color>
-    <color name="light_green">#00796B</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
-    <color name="light_gray">#FF5A595B</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="white">#FFFFFF</color>
+
     <!-- Self added colors -->
     <color name="lifted_gray_blue">#cfeafa</color>
     <color name="buttonLabel">#FFFFFF</color>
+
+    <color name="off_white">#f0e7e0</color>
+    <color name="text_gray">#333333</color>
+
+    <color name="creme">#ebd2bf</color>
+    <color name="text_green">#536c4c</color>
+    <color name="dark_green">#1B5533</color>
+    <color name="coral">#de977d</color>
+    <color name="gold">#85552E</color>
+    <color name="brick">#a44a30</color>
+    <color name="cucumber">#f1f3ee</color>
+    <color name="nice_green">#3d690f</color>
+    <color name="pink">#EFDAD1</color>
+
 </resources>

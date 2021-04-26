@@ -1,11 +1,17 @@
 <resources>
     <string name="app_name">I Plan(t)</string>
-    <string name="hint_plant">Plant\'s nickname</string>
+    <string name="hint_plant">Plant’s nickname</string>
     <string name="button_save">Save</string>
     <string name="empty_not_saved">Plant in not saved because it is empty.</string>
     <string name="add_plant">Add plant</string>
     <string name="new_plant">New plant</string>
     <string name="main_photo">Your plant\'s main photo</string>
-    <string name="days_between_watering">Days between watering</string>
+    <string name="days_between_watering">Days between watering:</string>
+    <string name="common_name">Common name</string>
+    <string name="your_plants">Your plants</string>
+    <string name="days_between_fertilizing">Days between fertilizing:</string>
+    <string name="autocomplete">Autocomplete</string>
+    <string name="days_between_photographing">Days between photos:</string>
+    <string name="notes">Notes</string>
 
 </resources>
