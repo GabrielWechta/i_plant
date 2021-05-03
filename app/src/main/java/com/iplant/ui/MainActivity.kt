@@ -16,8 +16,6 @@ import com.skydoves.transformationlayout.TransformationCompat
 import com.skydoves.transformationlayout.TransformationLayout
 import com.skydoves.transformationlayout.onTransformationStartContainer
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.*
 
 class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener {
 
@@ -38,7 +36,7 @@ class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener {
             recyclerView.adapter = adapter
             recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
             fab.setOnClickListener {
-                val intent = Intent(this@MainActivity, NewPlantActivity::class.java)
+                val intent = Intent(this@MainActivity, AddEditPlantActivity::class.java)
                 TransformationCompat.startActivityForResult(
                     transformationLayout,
                     intent,
@@ -56,7 +54,7 @@ class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == newPlantActivityRequestCode && resultCode == Activity.RESULT_OK) {
-            data?.getStringExtra(NewPlantActivity.EXTRA_REPLY)?.let {
+            data?.getStringExtra(AddEditPlantActivity.EXTRA_REPLY)?.let {
                 val plantName = it
                 val plant = Plant(
                     plantName,

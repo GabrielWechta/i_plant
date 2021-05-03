@@ -20,5 +20,10 @@
     <string name="needs_fertilizer">Needs fertilizer!</string>
     <string name="needs_both">Needs watering and fertilizing!</string>
     <string name="dead">Dead since %1$s</string>
+    <string name="edit_plant">Edit plant</string>
+    <string name="plant_has_died">Plant has died</string>
+    <string name="cause_of_death">Cause of death</string>
+    <string name="most_recent_photo">Plant\'s most recent photo</string>
+    <string name="date_of_death">Date of death</string>
 
 </resources>

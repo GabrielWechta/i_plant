@@ -1,21 +1,24 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.IPlant" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.IPlant" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:colorButtonNormal">@color/pink</item>
         <item name="android:textColor">@color/text_green</item>
+        <item name="android:textColorPrimary">@color/text_green</item>
         <item name="colorBackgroundFloating">@color/coral</item>
+        <item name="colorOnSurface">@color/text_green</item>
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimary">@color/text_green</item>
         <item name="colorPrimaryVariant">@color/cucumber</item>
-        <item name="colorOnPrimary">@color/text_gray</item>
+        <item name="colorOnPrimary">@color/cucumber</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/pink</item>
         <item name="colorSecondaryVariant">@color/coral</item>
-        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorOnSecondary">@color/text_green</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">@color/cucumber</item>
         <item name="android:windowLightStatusBar">true</item>
         <!-- Customize your theme here. -->
+        <item name="materialButtonStyle">@style/Button</item>
     </style>
 
     <style name="ActivityHeader">
@@ -24,10 +27,26 @@
         <item name="android:textColor">@color/text_green</item>
     </style>
 
+    <style name="EditLabel">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="Button" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/pink</item>
+        <item name="android:textColor">@color/text_green</item>
+        <item name="rippleColor">@color/coral</item>
+    </style>
+
+    <style name="InfoScreen">
+        <item name="android:background">@color/cucumber</item>
+    </style>
+
     <style name="word_title">
         <item name="android:layout_marginBottom">8dp</item>
         <item name="android:paddingLeft">8dp</item>
         <item name="android:background">@android:color/holo_orange_light</item>
         <item name="android:textAppearance">@android:style/TextAppearance.Large</item>
     </style>
+
+
 </resources>
