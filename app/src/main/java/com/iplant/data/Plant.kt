@@ -11,23 +11,20 @@ import java.time.LocalDateTime
 @Entity(tableName = "plant_table")
 data class Plant(
     /** Specification Part */
-    @PrimaryKey(autoGenerate = true)
-    val id: Long,
-    var caressing_name: String,
-    var common_name: String,
-    @Nullable
-    var scientific_name: String,
-    var adding_date: LocalDateTime,
+
+    val caressing_name: String,
+    val common_name: String,
+    @Nullable val scientific_name: String,
+    val adding_date: LocalDateTime,
 
     /** Growing Part */
-    var light: String, //TODO maybe enum?
-    var water_amount: String,
-    var watering_period: LocalDateTime,
-    var fertilizing_period: LocalDateTime,
+    val light: String, //TODO maybe enum?
+    val water_amount: String,
+    val watering_period: Int,
+    val fertilizing_period: Int,
 
     /** Death Part */
-    @Nullable
-    var death_date: LocalDateTime,
-    @Nullable
-    var death_cause: String
+    @Nullable val death_date: LocalDateTime,
+    @Nullable val death_cause: String,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0
 ) : Parcelable

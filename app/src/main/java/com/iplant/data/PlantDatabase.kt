@@ -37,8 +37,8 @@ abstract class PlantDatabase : RoomDatabase() {
                 adding_date = LocalDateTime.now(),
                 light = "a lot",
                 water_amount = "not much",
-                watering_period = LocalDateTime.now(),
-                fertilizing_period = LocalDateTime.now(),
+                watering_period = 14,
+                fertilizing_period = 30,
                 death_date = LocalDateTime.now(),
                 death_cause = "drug overdose"
             )
