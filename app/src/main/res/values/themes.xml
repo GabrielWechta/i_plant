@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.IPlant" parent="Theme.AppCompat.DayNight.NoActionBar">
+    <style name="Theme.IPlant" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:colorButtonNormal">@color/pink</item>
         <item name="android:textColor">@color/text_green</item>
         <item name="colorBackgroundFloating">@color/coral</item>

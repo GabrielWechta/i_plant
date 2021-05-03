@@ -16,6 +16,8 @@ import com.skydoves.transformationlayout.TransformationCompat
 import com.skydoves.transformationlayout.TransformationLayout
 import com.skydoves.transformationlayout.onTransformationStartContainer
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener {
 
@@ -30,7 +32,7 @@ class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener {
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val adapter = PlantListAdapter(this)
+        val adapter = PlantListAdapter(this, baseContext)
 
         binding.apply {
             recyclerView.adapter = adapter
@@ -57,15 +59,14 @@ class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener {
             data?.getStringExtra(NewPlantActivity.EXTRA_REPLY)?.let {
                 val plantName = it
                 val plant = Plant(
-                    0,
                     plantName,
                     "dfg",
                     "hjk",
                     LocalDateTime.now(),
                     "qwe",
                     "rty",
-                    LocalDateTime.now(),
-                    LocalDateTime.now(),
+                    7,
+                    14,
                     LocalDateTime.now(),
                     "tyu"
                 )

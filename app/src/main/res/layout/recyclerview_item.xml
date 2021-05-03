@@ -2,7 +2,7 @@
 <com.skydoves.transformationlayout.TransformationLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="100dp"
     android:layout_marginTop="16dp"
     app:transformation_duration="550">
 
@@ -17,7 +17,7 @@
 
         <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/card_image"
@@ -27,7 +27,7 @@
                 android:adjustViewBounds="true"
                 android:src="@drawable/zz" />
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/card_image"
@@ -37,9 +37,12 @@
                     android:id="@+id/card_nick"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:ellipsize="end"
                     android:fontFamily="@font/merriweather_bold"
+                    android:maxLines="1"
                     android:paddingHorizontal="16dp"
-                    android:paddingVertical="8dp"
+                    android:paddingTop="8dp"
                     android:text="@string/hint_plant"
                     android:textSize="26sp" />
 
@@ -47,9 +50,20 @@
                     android:id="@+id/card_common_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/card_nick"
                     android:paddingHorizontal="16dp"
-                    android:text="@string/common_name" />
-            </LinearLayout>
+                    android:text="@string/common_name_placeholder" />
+
+                <TextView
+                    android:id="@+id/card_status"
+                    android:textSize="12sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:paddingHorizontal="16dp"
+                    android:paddingBottom="4dp"
+                    android:text="@string/needs_watering" />
+            </RelativeLayout>
         </RelativeLayout>
 
 

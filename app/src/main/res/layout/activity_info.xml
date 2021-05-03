@@ -16,22 +16,36 @@
         android:contentDescription="@string/main_photo"
         android:src="@drawable/zz" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/plant_nick"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:fontFamily="@font/merriweather_bold"
-        android:paddingTop="16dp"
-        android:text="@string/hint_plant"
-        android:textSize="26sp" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="ZZ Plant"
-        android:textSize="18sp" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/plant_nick"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_alignParentTop="true"
+            android:fontFamily="@font/merriweather_bold"
+            android:paddingTop="16dp"
+            android:text="@string/hint_plant"
+            android:textSize="26sp" />
 
+        <TextView
+            android:layout_below="@+id/plant_nick"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="ZZ Plant"
+            android:textSize="18sp" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_more"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            />
+    </RelativeLayout>
 
 </LinearLayout>

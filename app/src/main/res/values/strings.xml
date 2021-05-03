@@ -7,11 +7,18 @@
     <string name="new_plant">New plant</string>
     <string name="main_photo">Your plant\'s main photo</string>
     <string name="days_between_watering">Days between watering:</string>
-    <string name="common_name">Common name</string>
     <string name="your_plants">Your plants</string>
     <string name="days_between_fertilizing">Days between fertilizing:</string>
     <string name="autocomplete">Autocomplete</string>
     <string name="days_between_photographing">Days between photos:</string>
     <string name="notes">Notes</string>
+    <string name="common_name">Common name</string>
+
+    <!-- A plant's status -->
+    <string name="common_name_placeholder">(%1$s)</string>
+    <string name="needs_watering">Needs watering!</string>
+    <string name="needs_fertilizer">Needs fertilizer!</string>
+    <string name="needs_both">Needs watering and fertilizing!</string>
+    <string name="dead">Dead since %1$s</string>
 
 </resources>

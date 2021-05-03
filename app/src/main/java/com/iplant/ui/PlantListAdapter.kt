@@ -1,15 +1,23 @@
 package com.iplant.ui
 
+import android.content.Context
+import android.provider.Settings.Global.getString
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.iplant.R
 import com.iplant.data.Plant
 import com.iplant.databinding.RecyclerviewItemBinding
 import com.skydoves.transformationlayout.TransformationLayout
+import java.time.format.DateTimeFormatter
+import java.util.*
 
-class PlantListAdapter(private val clickListener: PlantClickListener) :
+class PlantListAdapter(
+    private val clickListener: PlantClickListener,
+    private val context: Context
+) :
     ListAdapter<Plant, PlantListAdapter.PlantViewHolder>(PlantsComparator()) {
 
     interface PlantClickListener {
@@ -36,11 +44,24 @@ class PlantListAdapter(private val clickListener: PlantClickListener) :
         fun bind(plant: Plant) {
             binding.apply {
                 cardNick.text = plant.caressing_name
-                cardCommonName.text = plant.common_name
+                cardCommonName.text = context.getString(R.string.common_name_placeholder, plant.common_name)
+                cardStatus.text = getPlantStatus(plant)
             }
             itemView.setOnClickListener {
                 clickListener.onPlantClick(it as TransformationLayout, plant)
             }
+        }
+
+        private fun getPlantStatus(plant: Plant): String {
+            // TODO other status messages + do nullable fields need '?'
+            if (plant.death_date != null) {
+                return context.getString(
+                    R.string.dead, plant.death_date.format(
+                        DateTimeFormatter.ofPattern("dd MMM uuuu", Locale.ENGLISH)
+                    )
+                )
+            }
+            return  ""
         }
     }
 
