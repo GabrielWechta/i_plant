@@ -54,21 +54,8 @@ class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == newPlantActivityRequestCode && resultCode == Activity.RESULT_OK) {
-            data?.getStringExtra(AddEditPlantActivity.EXTRA_REPLY)?.let {
-                val plantName = it
-                val plant = Plant(
-                    plantName,
-                    "dfg",
-                    "hjk",
-                    LocalDateTime.now(),
-                    "qwe",
-                    "rty",
-                    7,
-                    14,
-                    LocalDateTime.now(),
-                    "tyu"
-                )
-                plantViewModel.insert(plant)
+            data?.getParcelableExtra<Plant>("plant")?.let {
+                plantViewModel.insert(it)
             }
         } else {
             Toast.makeText(

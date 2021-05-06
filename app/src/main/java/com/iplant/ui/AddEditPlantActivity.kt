@@ -8,19 +8,14 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.iplant.data.Plant
 import com.iplant.databinding.ActivityEditPlantBinding
-import com.skydoves.transformationlayout.TransformationActivity
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 class AddEditPlantActivity : AppCompatActivity() {
-
     private lateinit var editWordView: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,6 +23,7 @@ class AddEditPlantActivity : AppCompatActivity() {
         val binding = ActivityEditPlantBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val plant = intent.getParcelableExtra<Plant>("plant")
         val datePicker =
             MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Select date of death")
@@ -71,17 +67,48 @@ class AddEditPlantActivity : AppCompatActivity() {
 
             buttonSave.setOnClickListener {
                 val replyIntent = Intent()
-                if (TextUtils.isEmpty(editWordView.text)) {
-                    setResult(Activity.RESULT_CANCELED, replyIntent)
+                if (editPlant.text.isNullOrBlank()) {
+                    editPlantLayout.error = "Nickname cannot be empty"
                 } else {
-                    val word = editWordView.text.toString()
-                    replyIntent.putExtra(EXTRA_REPLY, word)
+                    var deathDate: LocalDate? = null
+                    if (hasDiedSwitch.isChecked) {
+                        deathDate = LocalDate.parse(
+                            datePickerDeathText.text,
+                            DateTimeFormatter.ofPattern("dd/MM/uu")
+                        )
+                    }
+
+                    val newPlant = Plant(
+                        editPlant.text.toString(),
+                        editCommonName.text.toString(),
+                        null,
+                        plant?.adding_date ?: LocalDate.now(),
+                        "idk",
+                        waterPicker.value,
+                        fertilizerPicker.value,
+                        editNotes.text.toString(),
+                        deathDate,
+                        editDeathCause.text.toString(),
+                        id = plant?.id ?: 0
+                    )
+                    replyIntent.putExtra("plant", newPlant)
                     setResult(Activity.RESULT_OK, replyIntent)
+                    finish()
                 }
-                finish()
+
+            }
+
+            plant?.let {
+                editPlant.setText(plant.caressing_name)
+                editCommonName.setText(plant.common_name)
+                waterPicker.value = plant.watering_period
+                fertilizerPicker.value = plant.fertilizing_period
+                hasDiedSwitch.isChecked = plant.death_date != null
+                datePickerDeathText.setText(plant.death_date?.format(DateTimeFormatter.ofPattern("dd/MM/uu")))
+                editDeathCause.setText(plant.death_cause)
+                editNotes.setText(plant.notes)
             }
         }
-
     }
 
     companion object {

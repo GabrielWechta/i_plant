@@ -1,21 +1,22 @@
 package com.iplant.data
 
 import androidx.room.TypeConverter
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 class Converters
 {
     @TypeConverter
-    fun toDate(dateString: String?): LocalDateTime? {
+    fun toDate(dateString: String?): LocalDate? {
         return if (dateString == null) {
             null
         } else {
-            LocalDateTime.parse(dateString)
+            LocalDate.parse(dateString)
         }
     }
 
     @TypeConverter
-    fun toDateString(date: LocalDateTime?): String? {
+    fun toDateString(date: LocalDate?): String? {
         return date?.toString()
     }
 }

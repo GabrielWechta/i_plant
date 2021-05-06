@@ -31,6 +31,7 @@
             android:textSize="26sp" />
 
         <TextView
+            android:id="@+id/common_name"
             android:layout_below="@+id/plant_nick"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,6 +40,7 @@
             android:textSize="18sp" />
 
         <ImageButton
+            android:id="@+id/edit_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_more"

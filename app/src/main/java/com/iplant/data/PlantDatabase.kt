@@ -5,6 +5,7 @@ import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Database(entities = [Plant::class], version = 1, exportSchema = false)
@@ -34,12 +35,11 @@ abstract class PlantDatabase : RoomDatabase() {
                 caressing_name = "Adam",
                 common_name = "Aloes",
                 scientific_name = "Aloe Vera",
-                adding_date = LocalDateTime.now(),
+                adding_date = LocalDate.now(),
                 light = "a lot",
-                water_amount = "not much",
                 watering_period = 14,
                 fertilizing_period = 30,
-                death_date = LocalDateTime.now(),
+                death_date = LocalDate.now(),
                 death_cause = "drug overdose"
             )
             plantDao.insert(plant)
