@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">I Plan(t)</string>
-    <string name="hint_plant">Plant’s nickname</string>
+    <string name="hint_plant">"Plant's nickname"</string>
     <string name="button_save">Save</string>
     <string name="empty_not_saved">Plant in not saved because it is empty.</string>
     <string name="add_plant">Add plant</string>
@@ -26,4 +26,5 @@
     <string name="most_recent_photo">Plant\'s most recent photo</string>
     <string name="date_of_death">Date of death</string>
 
+    <string name="reminder_channel">reminderChannel</string>
 </resources>
