@@ -17,6 +17,13 @@ import com.iplant.databinding.ActivityInfoBinding
 import com.skydoves.transformationlayout.TransformationActivity
 import com.skydoves.transformationlayout.TransformationCompat
 import com.skydoves.transformationlayout.TransformationLayout
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.Period.between
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 class InfoActivity : TransformationActivity(), PopupMenu.OnMenuItemClickListener {
     private val viewModel: PlantViewModel by viewModels {
@@ -26,10 +33,9 @@ class InfoActivity : TransformationActivity(), PopupMenu.OnMenuItemClickListener
     var plant: Plant? = null
     lateinit var binding: ActivityInfoBinding
     private val editPlant = registerForActivityResult(EditContract()) {
-        plant = it
-        bindPlantData(it)
         it?.let {
-            Log.i("TUTAJ", "$plant")
+            plant = it
+            bindPlantData(it)
             viewModel.update(it)
         }
 
@@ -52,9 +58,39 @@ class InfoActivity : TransformationActivity(), PopupMenu.OnMenuItemClickListener
 
     private fun bindPlantData(plant: Plant?) {
         plant?.let {
+
+                viewModel.getLastWatering(plant)
+                    .observe(this@InfoActivity, androidx.lifecycle.Observer {
+                        if (it.isNotEmpty()) {
+                            val watering = it[0]
+                            val diff = between(watering.watering_date, LocalDate.now()).days
+                            binding.lastWateredText.text =
+                                getString(R.string.last_watered, "$diff days ago")
+                        } else {
+                            binding.lastWateredText.text = getString(R.string.last_watered, "never")
+                        }
+                    })
+
             binding.apply {
                 plantNick.text = it.caressing_name
                 commonName.text = it.common_name
+                if (plant.death_date != null) {
+                    infoAlive.visibility = View.GONE
+                    infoDead.visibility = View.VISIBLE
+                    deadTitle.text = getString(
+                        R.string.died_on,
+                        plant.death_date.format(
+                            DateTimeFormatter.ofPattern(
+                                "MMMM dd, uuuu",
+                                Locale.ENGLISH
+                            )
+                        )
+                    )
+                    deathCauseBody.text = plant.death_cause
+                } else {
+                    infoDead.visibility = View.GONE
+                    infoAlive.visibility = View.VISIBLE
+                }
             }
         }
     }

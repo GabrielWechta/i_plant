@@ -25,7 +25,6 @@ class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        onTransformationStartContainer()
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

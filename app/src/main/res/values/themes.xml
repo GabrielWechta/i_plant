@@ -37,6 +37,10 @@
         <item name="rippleColor">@color/coral</item>
     </style>
 
+    <style name="CardView" parent="Base.CardView">
+        <item name="cardCornerRadius">10dp</item>
+    </style>
+
     <style name="InfoScreen">
         <item name="android:background">@color/cucumber</item>
     </style>

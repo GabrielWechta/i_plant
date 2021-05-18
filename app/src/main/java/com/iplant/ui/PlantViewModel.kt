@@ -16,6 +16,9 @@ class PlantViewModel(private val repository: PlantRepository) : ViewModel() {
     fun update(plant: Plant) = viewModelScope.launch {
         repository.update(plant)
     }
+
+    fun getLastWatering(plant: Plant) = repository.getLastWatering(plant)
+
 }
 
 class PlantViewModelFactory(private val repository: PlantRepository) : ViewModelProvider.Factory {
