@@ -4,16 +4,21 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
 import com.iplant.PlantsApplication
+import com.iplant.R
 import com.iplant.data.Plant
 import com.iplant.databinding.ActivityInfoBinding
 import com.skydoves.transformationlayout.TransformationActivity
 import com.skydoves.transformationlayout.TransformationCompat
 import com.skydoves.transformationlayout.TransformationLayout
 
-class InfoActivity : TransformationActivity() {
+class InfoActivity : TransformationActivity(), PopupMenu.OnMenuItemClickListener {
     private val viewModel: PlantViewModel by viewModels {
         PlantViewModelFactory((application as PlantsApplication).repository)
     }
@@ -36,7 +41,11 @@ class InfoActivity : TransformationActivity() {
         setContentView(binding.root)
         plant = intent.getParcelableExtra("plant")
         binding.editButton.setOnClickListener {
-            editPlant.launch(plant)
+            PopupMenu(this, it).apply {
+                setOnMenuItemClickListener(this@InfoActivity)
+                inflate(R.menu.menu_plant)
+                show()
+            }
         }
         bindPlantData(plant)
     }
@@ -67,6 +76,19 @@ class InfoActivity : TransformationActivity() {
             val intent = Intent(context, InfoActivity::class.java)
             intent.putExtra("plant", plant)
             TransformationCompat.startActivity(transformationLayout, intent)
+        }
+    }
+
+    override fun onMenuItemClick(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_edit -> {
+                editPlant.launch(plant)
+                true
+            }
+            R.id.menu_gallery -> {
+                true
+            }
+            else -> false
         }
     }
 }
