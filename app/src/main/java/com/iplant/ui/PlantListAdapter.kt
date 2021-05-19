@@ -1,7 +1,6 @@
 package com.iplant.ui
 
 import android.content.Context
-import android.provider.Settings.Global.getString
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -10,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.iplant.R
 import com.iplant.data.Plant
 import com.iplant.databinding.RecyclerviewItemBinding
-import com.skydoves.transformationlayout.TransformationLayout
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -21,7 +19,7 @@ class PlantListAdapter(
     ListAdapter<Plant, PlantListAdapter.PlantViewHolder>(PlantsComparator()) {
 
     interface PlantClickListener {
-        fun onPlantClick(plantItem: TransformationLayout, plant: Plant)
+        fun onPlantClick(plant: Plant)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlantViewHolder {
@@ -44,11 +42,12 @@ class PlantListAdapter(
         fun bind(plant: Plant) {
             binding.apply {
                 cardNick.text = plant.caressing_name
-                cardCommonName.text = context.getString(R.string.common_name_placeholder, plant.common_name)
+                cardCommonName.text =
+                    context.getString(R.string.common_name_placeholder, plant.common_name)
                 cardStatus.text = getPlantStatus(plant)
             }
             itemView.setOnClickListener {
-                clickListener.onPlantClick(it as TransformationLayout, plant)
+                clickListener.onPlantClick(plant)
             }
         }
 
@@ -61,7 +60,7 @@ class PlantListAdapter(
                     )
                 )
             }
-            return  ""
+            return ""
         }
     }
 

@@ -27,4 +27,8 @@
     <string name="date_of_death">Date of death</string>
 
     <string name="reminder_channel">reminderChannel</string>
+    <string name="view_plants_history">View plant\'s history</string>
+    <string name="died_on">Died on %s</string>
+    <string name="last_watered">Last watered:\n%s</string>
+    <string name="last_fertilized">Last fertilized:\n%s</string>
 </resources>

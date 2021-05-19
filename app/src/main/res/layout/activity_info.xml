@@ -1,52 +1,203 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?colorPrimaryVariant"
-    android:orientation="vertical"
-    tools:context=".ui.InfoActivity" >
+    android:background="?colorPrimaryVariant">
 
-    <ImageView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/main_photo"
-        android:src="@drawable/zz" />
+        android:orientation="vertical"
+        tools:context=".ui.InfoActivity">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/plant_nick"
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_alignParentTop="true"
-            android:fontFamily="@font/merriweather_bold"
-            android:paddingTop="16dp"
-            android:text="@string/hint_plant"
-            android:textSize="26sp" />
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/main_photo"
+            android:src="@drawable/zz" />
 
-        <TextView
-            android:id="@+id/common_name"
-            android:layout_below="@+id/plant_nick"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/plant_nick"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:fontFamily="@font/merriweather_bold"
+                android:gravity="center"
+                android:paddingTop="16dp"
+                android:text="@string/hint_plant"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/common_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/plant_nick"
+                android:gravity="center"
+                android:text="ZZ Plant"
+                android:textSize="18sp" />
+
+            <ImageButton
+                android:id="@+id/edit_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/plant_nick"
+                android:layout_alignBottom="@+id/plant_nick"
+                android:layout_alignParentEnd="true"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:src="@drawable/ic_more"
+                android:tint="@color/text_green" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/info_alive"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="ZZ Plant"
-            android:textSize="18sp" />
+            android:orientation="vertical">
 
-        <ImageButton
-            android:id="@+id/edit_button"
-            android:layout_width="wrap_content"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/quick_actions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="10dp">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="24dp">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/quick_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="16dp"
+                        android:fontFamily="@font/merriweather_bold"
+                        android:gravity="center"
+                        android:paddingTop="16dp"
+                        android:text="Quick actions"
+                        android:textSize="22sp" />
+
+                    <Button
+                        android:id="@+id/button_water"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/quick_title"
+                        android:layout_marginHorizontal="16dp"
+                        android:text="Water" />
+
+                    <TextView
+                        android:id="@+id/last_watered_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/button_water"
+                        android:layout_alignStart="@id/button_water"
+                        android:layout_alignEnd="@id/button_water"
+                        android:gravity="center"
+                        android:text="@string/last_watered" />
+
+                    <Button
+                        android:id="@+id/button_fertilize"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/quick_title"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_toEndOf="@+id/button_water"
+                        android:text="Fertilize" />
+
+                    <TextView
+                        android:id="@+id/last_fertilized_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/button_fertilize"
+                        android:layout_alignStart="@id/button_fertilize"
+                        android:layout_alignEnd="@id/button_fertilize"
+                        android:gravity="center"
+                        android:text="@string/last_fertilized" />
+
+                </RelativeLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!--            <androidx.cardview.widget.CardView-->
+            <!--                android:id="@+id/calendar"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_margin="16dp">-->
+            <!--                <CalendarView-->
+            <!--                    android:layout_marginVertical="24dp"-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_gravity="center"/>-->
+            <!--            </androidx.cardview.widget.CardView>-->
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/info_dead"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_more"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
-            />
-    </RelativeLayout>
+            android:layout_margin="16dp"
+            app:cardCornerRadius="10dp">
 
-</LinearLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="24dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/image_rip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/ic_rip"
+                    app:tint="@color/text_green" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/dead_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/image_rip"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/merriweather_bold"
+                    android:gravity="center"
+                    android:paddingTop="16dp"
+                    android:text="@string/died_on"
+                    android:textSize="22sp" />
+
+                <TextView
+                    android:id="@+id/death_cause"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/dead_title"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:text="Cause of death:"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/death_cause_body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/death_cause"
+                    android:gravity="center"
+                    android:paddingHorizontal="32dp"
+                    android:text="Lorem ipsum hey bestie yas queen skinny legend versace boots the house down slay queen hunty mama and I oop daddy work charli xcx snatch my weave"
+                    android:textSize="18sp" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</ScrollView>

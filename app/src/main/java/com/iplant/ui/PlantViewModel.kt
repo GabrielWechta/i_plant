@@ -5,6 +5,7 @@ import com.iplant.data.Plant
 import com.iplant.data.PlantRepository
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
+import java.time.LocalDate
 
 class PlantViewModel(private val repository: PlantRepository) : ViewModel() {
     val allPlants: LiveData<List<Plant>> = repository.allPlants.asLiveData()
@@ -15,6 +16,16 @@ class PlantViewModel(private val repository: PlantRepository) : ViewModel() {
 
     fun update(plant: Plant) = viewModelScope.launch {
         repository.update(plant)
+    }
+
+    fun addWateringNote(plant: Plant, date: LocalDate) = viewModelScope.launch {
+        repository.addWateringNote(plant, date)
+    }
+
+    fun getLastWatering(plant: Plant) = repository.getLastWatering(plant)
+    fun getLastFertilizing(plant: Plant) = repository.getLastFertilizing(plant)
+    fun addFertilizingNote(plant: Plant, date: LocalDate) = viewModelScope.launch {
+        repository.addFertilizingNote(plant, date)
     }
 }
 
