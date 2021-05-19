@@ -3,13 +3,17 @@ package com.iplant.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.iplant.PlantsApplication
 import com.iplant.R
 import com.iplant.data.Plant
@@ -17,15 +21,12 @@ import com.iplant.databinding.ActivityInfoBinding
 import com.skydoves.transformationlayout.TransformationActivity
 import com.skydoves.transformationlayout.TransformationCompat
 import com.skydoves.transformationlayout.TransformationLayout
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.Period.between
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-class InfoActivity : TransformationActivity(), PopupMenu.OnMenuItemClickListener {
+class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     private val viewModel: PlantViewModel by viewModels {
         PlantViewModelFactory((application as PlantsApplication).repository)
     }
@@ -58,22 +59,74 @@ class InfoActivity : TransformationActivity(), PopupMenu.OnMenuItemClickListener
 
     private fun bindPlantData(plant: Plant?) {
         plant?.let {
+            val calendarConstraints = CalendarConstraints.Builder()
+                .setValidator(DateValidatorPointBackward.now())
+                .build()
+            val datePicker =
+                MaterialDatePicker.Builder.datePicker()
+                    .setTitleText("Select date")
+                    .setCalendarConstraints(calendarConstraints)
+                    .build()
 
-                viewModel.getLastWatering(plant)
-                    .observe(this@InfoActivity, androidx.lifecycle.Observer {
-                        if (it.isNotEmpty()) {
-                            val watering = it[0]
-                            val diff = between(watering.watering_date, LocalDate.now()).days
-                            binding.lastWateredText.text =
-                                getString(R.string.last_watered, "$diff days ago")
-                        } else {
-                            binding.lastWateredText.text = getString(R.string.last_watered, "never")
-                        }
-                    })
+            viewModel.getLastWatering(plant).observe(this, Observer {
+                if (it.isNotEmpty()) {
+                    val watering = it[0]
+                    val diff = between(watering.watering_date, LocalDate.now()).days
+                    val diffText = when (diff) {
+                        0 -> "today"
+                        1 -> "yesterday"
+                        else -> "$diff days ago"
+                    }
+                    binding.lastWateredText.text =
+                        getString(R.string.last_watered, diffText)
+                } else {
+                    binding.lastWateredText.text = getString(R.string.last_watered, "never")
+                }
+            })
+
+            viewModel.getLastFertilizing(plant).observe(this, Observer {
+                if (it.isNotEmpty()) {
+                    val fertilizing = it[0]
+                    val diff = between(fertilizing.fertilizing_date, LocalDate.now()).days
+                    val diffText = when (diff) {
+                        0 -> "today"
+                        1 -> "yesterday"
+                        else -> "$diff days ago"
+                    }
+                    binding.lastFertilizedText.text =
+                        getString(R.string.last_fertilized, diffText)
+                } else {
+                    binding.lastFertilizedText.text = getString(R.string.last_watered, "never")
+                }
+            })
 
             binding.apply {
                 plantNick.text = it.caressing_name
                 commonName.text = it.common_name
+                buttonWater.setOnClickListener {
+                    datePicker.addOnPositiveButtonClickListener {
+                        val date = LocalDate.ofEpochDay(it / (1000 * 3600 * 24))
+                        viewModel.addWateringNote(plant, date)
+                        Toast.makeText(
+                            this@InfoActivity,
+                            "Added a watering note on " + date.format(DateTimeFormatter.ofPattern("dd/MM/uu")),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    datePicker.show(supportFragmentManager, "watering")
+                }
+                buttonFertilize.setOnClickListener {
+                    datePicker.addOnPositiveButtonClickListener {
+                        val date = LocalDate.ofEpochDay(it / (1000 * 3600 * 24))
+                        viewModel.addFertilizingNote(plant, date)
+                        Toast.makeText(
+                            this@InfoActivity,
+                            "Added a fertilizing note on " + date.format(DateTimeFormatter.ofPattern("dd/MM/uu")),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                    datePicker.show(supportFragmentManager, "fertilizing")
+                }
                 if (plant.death_date != null) {
                     infoAlive.visibility = View.GONE
                     infoDead.visibility = View.VISIBLE

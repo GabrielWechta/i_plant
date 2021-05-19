@@ -126,7 +126,7 @@
                         android:layout_alignStart="@id/button_fertilize"
                         android:layout_alignEnd="@id/button_fertilize"
                         android:gravity="center"
-                        android:text="Last fertilized:\n%s" />
+                        android:text="@string/last_fertilized" />
 
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
