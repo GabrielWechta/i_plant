@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,17 +9,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatTextView
+            style="@style/ActivityHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:text="@string/your_plants"
             android:paddingHorizontal="16dp"
             android:paddingTop="16dp"
-            style="@style/ActivityHeader"
-            />
+            android:text="@string/your_plants" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
@@ -31,26 +29,17 @@
             tools:listitem="@layout/recyclerview_item" />
     </LinearLayout>
 
-
-    <com.skydoves.transformationlayout.TransformationLayout
-        android:id="@+id/transformation_layout"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:contentDescription="Add"
+        android:src="@drawable/ic_add"
+        app:borderWidth="0dp"
+        app:rippleColor="@color/coral" />
 
-        app:transformation_duration="550"
-        app:transformation_fadeMode="cross">
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
-            app:rippleColor="@color/coral"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_add"
-            app:borderWidth="0dp"
-            android:contentDescription="Add" />
-    </com.skydoves.transformationlayout.TransformationLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

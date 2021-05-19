@@ -8,6 +8,8 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.iplant.data.Plant
 import com.iplant.databinding.ActivityEditPlantBinding
@@ -24,9 +26,14 @@ class AddEditPlantActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val plant = intent.getParcelableExtra<Plant>("plant")
+
+        val calendarConstraints = CalendarConstraints.Builder()
+            .setValidator(DateValidatorPointBackward.now())
+            .build()
         val datePicker =
             MaterialDatePicker.Builder.datePicker()
                 .setTitleText("Select date of death")
+                .setCalendarConstraints(calendarConstraints)
                 .build()
 
         binding.apply {
@@ -72,6 +79,10 @@ class AddEditPlantActivity : AppCompatActivity() {
                 } else {
                     var deathDate: LocalDate? = null
                     if (hasDiedSwitch.isChecked) {
+                        if (datePickerDeathText.text.isNullOrBlank()) {
+                            datePickerDeath.error = "Death date cannot be empty"
+                            return@setOnClickListener
+                        }
                         deathDate = LocalDate.parse(
                             datePickerDeathText.text,
                             DateTimeFormatter.ofPattern("dd/MM/uu")

@@ -1,9 +1,11 @@
 package com.iplant.ui
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -12,16 +14,17 @@ import com.iplant.PlantsApplication
 import com.iplant.R
 import com.iplant.data.Plant
 import com.iplant.databinding.ActivityMainBinding
-import com.skydoves.transformationlayout.TransformationCompat
-import com.skydoves.transformationlayout.TransformationLayout
-import com.skydoves.transformationlayout.onTransformationStartContainer
-import java.time.LocalDateTime
 
 class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener {
 
     private val newPlantActivityRequestCode = 1
     private val plantViewModel: PlantViewModel by viewModels {
         PlantViewModelFactory((application as PlantsApplication).repository)
+    }
+    private val addPlant = registerForActivityResult(AddingContract()) {
+        it?.let {
+            plantViewModel.insert(it)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,12 +38,7 @@ class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener {
             recyclerView.adapter = adapter
             recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
             fab.setOnClickListener {
-                val intent = Intent(this@MainActivity, AddEditPlantActivity::class.java)
-                TransformationCompat.startActivityForResult(
-                    transformationLayout,
-                    intent,
-                    newPlantActivityRequestCode
-                )
+                addPlant.launch(null)
             }
         }
 
@@ -49,23 +47,17 @@ class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener {
         })
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == newPlantActivityRequestCode && resultCode == Activity.RESULT_OK) {
-            data?.getParcelableExtra<Plant>("plant")?.let {
-                plantViewModel.insert(it)
-            }
-        } else {
-            Toast.makeText(
-                applicationContext,
-                R.string.empty_not_saved,
-                Toast.LENGTH_LONG
-            ).show()
-        }
+    override fun onPlantClick(plant: Plant) {
+        val intent = Intent(this, InfoActivity::class.java)
+        intent.putExtra("plant", plant)
+        startActivity(intent)
     }
 
-    override fun onPlantClick(plantItem: TransformationLayout, plant: Plant) {
-        InfoActivity.startActivity(this, plantItem, plant)
+    internal class AddingContract : ActivityResultContract<Nothing?, Plant>() {
+        override fun createIntent(context: Context, input: Nothing?): Intent =
+            Intent(context, AddEditPlantActivity::class.java)
+
+        override fun parseResult(resultCode: Int, intent: Intent?): Plant? =
+            intent?.getParcelableExtra("plant")
     }
 }

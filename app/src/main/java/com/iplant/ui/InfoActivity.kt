@@ -18,9 +18,6 @@ import com.iplant.PlantsApplication
 import com.iplant.R
 import com.iplant.data.Plant
 import com.iplant.databinding.ActivityInfoBinding
-import com.skydoves.transformationlayout.TransformationActivity
-import com.skydoves.transformationlayout.TransformationCompat
-import com.skydoves.transformationlayout.TransformationLayout
 import java.time.LocalDate
 import java.time.Period.between
 import java.time.format.DateTimeFormatter
@@ -39,7 +36,6 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             bindPlantData(it)
             viewModel.update(it)
         }
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,12 +67,12 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             viewModel.getLastWatering(plant).observe(this, Observer {
                 if (it.isNotEmpty()) {
                     val watering = it[0]
-                    val diff = between(watering.watering_date, LocalDate.now()).days
-                    val diffText = when (diff) {
-                        0 -> "today"
-                        1 -> "yesterday"
-                        else -> "$diff days ago"
-                    }
+                    val diffText =
+                        when (val diff = between(watering.watering_date, LocalDate.now()).days) {
+                            0 -> "today"
+                            1 -> "yesterday"
+                            else -> "$diff days ago"
+                        }
                     binding.lastWateredText.text =
                         getString(R.string.last_watered, diffText)
                 } else {
@@ -87,8 +83,8 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             viewModel.getLastFertilizing(plant).observe(this, Observer {
                 if (it.isNotEmpty()) {
                     val fertilizing = it[0]
-                    val diff = between(fertilizing.fertilizing_date, LocalDate.now()).days
-                    val diffText = when (diff) {
+                    val diffText = when (val diff =
+                        between(fertilizing.fertilizing_date, LocalDate.now()).days) {
                         0 -> "today"
                         1 -> "yesterday"
                         else -> "$diff days ago"
@@ -96,7 +92,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     binding.lastFertilizedText.text =
                         getString(R.string.last_fertilized, diffText)
                 } else {
-                    binding.lastFertilizedText.text = getString(R.string.last_watered, "never")
+                    binding.lastFertilizedText.text = getString(R.string.last_fertilized, "never")
                 }
             })
 
@@ -121,7 +117,11 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                         viewModel.addFertilizingNote(plant, date)
                         Toast.makeText(
                             this@InfoActivity,
-                            "Added a fertilizing note on " + date.format(DateTimeFormatter.ofPattern("dd/MM/uu")),
+                            "Added a fertilizing note on " + date.format(
+                                DateTimeFormatter.ofPattern(
+                                    "dd/MM/uu"
+                                )
+                            ),
                             Toast.LENGTH_LONG
                         ).show()
                     }
@@ -154,18 +154,6 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
         override fun parseResult(resultCode: Int, intent: Intent?): Plant? =
             intent?.getParcelableExtra("plant")
-    }
-
-    companion object {
-        fun startActivity(
-            context: Context,
-            transformationLayout: TransformationLayout,
-            plant: Plant
-        ) {
-            val intent = Intent(context, InfoActivity::class.java)
-            intent.putExtra("plant", plant)
-            TransformationCompat.startActivity(transformationLayout, intent)
-        }
     }
 
     override fun onMenuItemClick(item: MenuItem): Boolean {
