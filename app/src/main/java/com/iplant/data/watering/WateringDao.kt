@@ -15,6 +15,6 @@ interface WateringDao {
     @Query("select * from watering_table where plant_id = :plantId order by watering_date desc limit 1")
     fun getLastWatering(plantId: Long): LiveData<List<Watering>>
 
-//    @Query("select * from watering_table where plant_id = :plantId")
-//    fun getMonthlyWatering(plantId: Long, month: Int): LiveData<List<Watering>>
+    @Query("select * from watering_table where plant_id = :plantId")
+    fun getAll(plantId: Long): LiveData<List<Watering>>
 }

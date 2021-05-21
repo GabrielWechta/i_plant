@@ -11,17 +11,21 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.applandeo.materialcalendarview.EventDay
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.iplant.PlantsApplication
 import com.iplant.R
 import com.iplant.data.Plant
+import com.iplant.data.PlantEvent
 import com.iplant.databinding.ActivityInfoBinding
 import java.time.LocalDate
 import java.time.Period.between
 import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     private val viewModel: PlantViewModel by viewModels {
@@ -127,6 +131,46 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     }
                     datePicker.show(supportFragmentManager, "fertilizing")
                 }
+
+                LocalDate.now().apply {
+                    val maxDate = Calendar.getInstance()
+                    maxDate.set(year, monthValue - 1, dayOfMonth)
+                    historyCalendar.setMaximumDate(maxDate)
+                }
+
+                plant.adding_date.minusDays(1).apply {
+                    val minDate = Calendar.getInstance()
+                    minDate.set(year, monthValue - 1, dayOfMonth)
+                    historyCalendar.setMinimumDate(minDate)
+                }
+
+                viewModel.getAllEvents(plant).observe(this@InfoActivity, Observer { plantEvents ->
+                    val eventMap: HashMap<LocalDate, PlantEvent> = hashMapOf()
+                    plantEvents.forEach {
+                        val date = it.getEventDate()
+                        val icon = it.getIcon()
+                        if (eventMap.containsKey(date) && eventMap[date]!!.getIcon() != icon) {
+                            eventMap[date] = object: PlantEvent {
+                                override fun getEventDate(): LocalDate = date
+                                override fun getIcon(): Int = R.drawable.ic_both_events
+                            }
+                        } else {
+                            eventMap[date] = it
+                        }
+                    }
+
+                    val events: ArrayList<EventDay> = ArrayList(eventMap.size)
+                    var i = 0
+                    eventMap.values.forEach {
+                        val day: Calendar = Calendar.getInstance()
+                        it.getEventDate().apply {
+                            day.set(year, monthValue-1, dayOfMonth)
+                        }
+                        events.add(i++, EventDay(day, it.getIcon()))
+                    }
+                    historyCalendar.setEvents(events)
+                })
+
                 if (plant.death_date != null) {
                     infoAlive.visibility = View.GONE
                     infoDead.visibility = View.VISIBLE

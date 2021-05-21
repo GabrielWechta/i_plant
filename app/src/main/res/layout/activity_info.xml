@@ -131,17 +131,21 @@
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
 
-            <!--            <androidx.cardview.widget.CardView-->
-            <!--                android:id="@+id/calendar"-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_margin="16dp">-->
-            <!--                <CalendarView-->
-            <!--                    android:layout_marginVertical="24dp"-->
-            <!--                    android:layout_width="wrap_content"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:layout_gravity="center"/>-->
-            <!--            </androidx.cardview.widget.CardView>-->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/calendar_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="10dp">
+
+                <com.applandeo.materialcalendarview.CalendarView
+                    android:id="@+id/history_calendar"
+                    app:headerColor="@color/text_green"
+                    app:todayLabelColor="@color/text_green"
+                    android:layout_width="match_parent"
+                    android:layout_height="450dp" />
+
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
 
         <androidx.cardview.widget.CardView

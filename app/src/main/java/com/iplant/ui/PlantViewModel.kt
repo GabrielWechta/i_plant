@@ -22,11 +22,14 @@ class PlantViewModel(private val repository: PlantRepository) : ViewModel() {
         repository.addWateringNote(plant, date)
     }
 
-    fun getLastWatering(plant: Plant) = repository.getLastWatering(plant)
-    fun getLastFertilizing(plant: Plant) = repository.getLastFertilizing(plant)
     fun addFertilizingNote(plant: Plant, date: LocalDate) = viewModelScope.launch {
         repository.addFertilizingNote(plant, date)
     }
+
+    fun getLastWatering(plant: Plant) = repository.getLastWatering(plant)
+    fun getLastFertilizing(plant: Plant) = repository.getLastFertilizing(plant)
+    fun getAllEvents(plant: Plant) = repository.getAllEvents(plant)
+
 }
 
 class PlantViewModelFactory(private val repository: PlantRepository) : ViewModelProvider.Factory {

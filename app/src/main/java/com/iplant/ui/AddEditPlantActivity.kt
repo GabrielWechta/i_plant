@@ -38,7 +38,7 @@ class AddEditPlantActivity : AppCompatActivity() {
 
         binding.apply {
             editWordView = editPlant
-            hasDiedSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            hasDiedSwitch.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) {
                     deadDetails.visibility = VISIBLE
                     aliveDetails.visibility = GONE

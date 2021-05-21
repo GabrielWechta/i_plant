@@ -3,6 +3,7 @@ package com.iplant.ui
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
@@ -14,6 +15,7 @@ import com.iplant.PlantsApplication
 import com.iplant.R
 import com.iplant.data.Plant
 import com.iplant.databinding.ActivityMainBinding
+import java.util.*
 
 class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener {
 

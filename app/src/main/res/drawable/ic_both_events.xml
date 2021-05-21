@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:drawable="@drawable/ic_fertilizer"
+        android:gravity="start" />
+    <item
+        android:drawable="@drawable/ic_water"
+        android:gravity="end"
+        android:left="40dp"/>
+
+</layer-list>

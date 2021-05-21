@@ -2,6 +2,7 @@ package com.iplant.data
 
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import com.iplant.data.Plant
 import com.iplant.data.PlantDao
 import com.iplant.data.fertilizing.Fertilizing
@@ -44,8 +45,34 @@ class PlantRepository(private val database: PlantDatabase) {
         return wateringDao.getLastWatering(plant.id)
     }
 
+    private fun getAllWatering(plant: Plant): LiveData<List<Watering>> {
+        return wateringDao.getAll(plant.id)
+    }
+
     fun getLastFertilizing(plant: Plant): LiveData<List<Fertilizing>> {
         return fertilizingDao.getLastFertilizing(plant.id)
+    }
+
+    private fun getAllFertilizing(plant: Plant): LiveData<List<Fertilizing>> {
+        return fertilizingDao.getAll(plant.id)
+    }
+
+    fun getAllEvents(plant: Plant): LiveData<List<PlantEvent>> {
+        val combined = object: MediatorLiveData<List<PlantEvent>>() {
+            var wateringList: List<Watering> = listOf()
+            var fertilizingList: List<Fertilizing> = listOf()
+        }
+        val watering = getAllWatering(plant)
+        val fertilizing = getAllFertilizing(plant)
+        combined.addSource(watering) {
+            combined.wateringList = it
+            combined.value = it + combined.fertilizingList
+        }
+        combined.addSource(fertilizing) {
+            combined.fertilizingList = it
+            combined.value = combined.wateringList + it
+        }
+        return combined
     }
 
 
