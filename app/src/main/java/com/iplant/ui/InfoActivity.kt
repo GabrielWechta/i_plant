@@ -23,7 +23,6 @@ import java.time.Period.between
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     private val viewModel: PlantViewModel by viewModels {
@@ -72,38 +71,6 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     .setCalendarConstraints(calendarConstraints)
                     .build()
 
-            viewModel.getLastWatering(plant).observe(this, Observer {
-                if (it.isNotEmpty()) {
-                    val watering = it[0]
-                    val diffText =
-                        when (val diff = between(watering.watering_date, LocalDate.now()).days) {
-                            0 -> "today"
-                            1 -> "yesterday"
-                            else -> "$diff days ago"
-                        }
-                    binding.lastWateredText.text =
-                        getString(R.string.last_watered, diffText)
-                } else {
-                    binding.lastWateredText.text = getString(R.string.last_watered, "never")
-                }
-            })
-
-            viewModel.getLastFertilizing(plant).observe(this, Observer {
-                if (it.isNotEmpty()) {
-                    val fertilizing = it[0]
-                    val diffText = when (val diff =
-                        between(fertilizing.fertilizing_date, LocalDate.now()).days) {
-                        0 -> "today"
-                        1 -> "yesterday"
-                        else -> "$diff days ago"
-                    }
-                    binding.lastFertilizedText.text =
-                        getString(R.string.last_fertilized, diffText)
-                } else {
-                    binding.lastFertilizedText.text = getString(R.string.last_fertilized, "never")
-                }
-            })
-
             binding.apply {
                 plantNick.text = it.caressing_name
                 commonName.text = it.common_name
@@ -135,6 +102,39 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     }
                     datePicker.show(supportFragmentManager, "fertilizing")
                 }
+
+                viewModel.getLastWatering(plant).observe(this@InfoActivity, Observer {
+                    if (it.isNotEmpty()) {
+                        val watering = it[0]
+                        val diffText =
+                            when (val diff =
+                                between(watering.watering_date, LocalDate.now()).days) {
+                                0 -> "today"
+                                1 -> "yesterday"
+                                else -> "$diff days ago"
+                            }
+                        lastWateredText.text =
+                            getString(R.string.last_watered, diffText)
+                    } else {
+                        lastWateredText.text = getString(R.string.last_watered, "never")
+                    }
+                })
+
+                viewModel.getLastFertilizing(plant).observe(this@InfoActivity, Observer {
+                    if (it.isNotEmpty()) {
+                        val fertilizing = it[0]
+                        val diffText = when (val diff =
+                            between(fertilizing.fertilizing_date, LocalDate.now()).days) {
+                            0 -> "today"
+                            1 -> "yesterday"
+                            else -> "$diff days ago"
+                        }
+                        lastFertilizedText.text =
+                            getString(R.string.last_fertilized, diffText)
+                    } else {
+                        lastFertilizedText.text = getString(R.string.last_fertilized, "never")
+                    }
+                })
 
                 LocalDate.now().apply {
                     val maxDate = Calendar.getInstance()
