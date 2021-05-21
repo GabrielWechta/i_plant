@@ -12,9 +12,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.applandeo.materialcalendarview.EventDay
-import com.google.android.material.datepicker.CalendarConstraints
-import com.google.android.material.datepicker.DateValidatorPointBackward
-import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.datepicker.*
 import com.iplant.PlantsApplication
 import com.iplant.R
 import com.iplant.data.Plant
@@ -60,8 +58,14 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     private fun bindPlantData(plant: Plant?) {
         plant?.let {
             val calendarConstraints = CalendarConstraints.Builder()
-                .setValidator(DateValidatorPointBackward.now())
-                .build()
+                .setValidator(
+                    CompositeDateValidator.allOf(
+                        listOf(
+                            DateValidatorPointBackward.now(),
+                            DateValidatorPointForward.from(plant.adding_date.toEpochDay() * 24 * 3600 * 1000)
+                        )
+                    )
+                ).build()
             val datePicker =
                 MaterialDatePicker.Builder.datePicker()
                     .setTitleText("Select date")
@@ -150,7 +154,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                         val date = it.getEventDate()
                         val icon = it.getIcon()
                         if (eventMap.containsKey(date) && eventMap[date]!!.getIcon() != icon) {
-                            eventMap[date] = object: PlantEvent {
+                            eventMap[date] = object : PlantEvent {
                                 override fun getEventDate(): LocalDate = date
                                 override fun getIcon(): Int = R.drawable.ic_both_events
                             }
@@ -164,7 +168,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     eventMap.values.forEach {
                         val day: Calendar = Calendar.getInstance()
                         it.getEventDate().apply {
-                            day.set(year, monthValue-1, dayOfMonth)
+                            day.set(year, monthValue - 1, dayOfMonth)
                         }
                         events.add(i++, EventDay(day, it.getIcon()))
                     }
