@@ -13,7 +13,10 @@ interface WateringDao {
     suspend fun insert(watering: Watering)
 
     @Query("select * from watering_table where plant_id = :plantId order by watering_date desc limit 1")
-    fun getLastWatering(plantId: Long): LiveData<List<Watering>>
+    fun observeLastWatering(plantId: Long): LiveData<List<Watering>>
+
+    @Query("select * from watering_table where plant_id = :plantId order by watering_date desc limit 1")
+    suspend fun getLastWatering(plantId: Long): List<Watering>
 
     @Query("select * from watering_table where plant_id = :plantId")
     fun getAll(plantId: Long): LiveData<List<Watering>>

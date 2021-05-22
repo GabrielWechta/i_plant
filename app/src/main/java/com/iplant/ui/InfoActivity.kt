@@ -103,7 +103,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     datePicker.show(supportFragmentManager, "fertilizing")
                 }
 
-                viewModel.getLastWatering(plant).observe(this@InfoActivity, Observer {
+                viewModel.observeLastWatering(plant).observe(this@InfoActivity, Observer {
                     if (it.isNotEmpty()) {
                         val watering = it[0]
                         val diffText =
@@ -120,7 +120,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     }
                 })
 
-                viewModel.getLastFertilizing(plant).observe(this@InfoActivity, Observer {
+                viewModel.observeLastFertilizing(plant).observe(this@InfoActivity, Observer {
                     if (it.isNotEmpty()) {
                         val fertilizing = it[0]
                         val diffText = when (val diff =

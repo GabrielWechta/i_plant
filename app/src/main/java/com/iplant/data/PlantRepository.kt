@@ -15,7 +15,7 @@ class PlantRepository(private val database: PlantDatabase) {
     val wateringDao = database.getWateringDao()
     val fertilizingDao = database.getFertilizingDao()
 
-    val allPlants: Flow<List<Plant>> = plantDao.getAllOrderedById()
+    fun getAllPlants(hideDead: Boolean): Flow<List<Plant>> = plantDao.getAllOrderedById(hideDead)
 
 //    @Suppress("RedundantSuspendModifier")
     @WorkerThread
@@ -41,16 +41,26 @@ class PlantRepository(private val database: PlantDatabase) {
         fertilizingDao.insert(fertilizing)
     }
 
-    fun getLastWatering(plant: Plant): LiveData<List<Watering>> {
-        return wateringDao.getLastWatering(plant.id)
+    fun observeLastWatering(plant: Plant): LiveData<List<Watering>> {
+        return wateringDao.observeLastWatering(plant.id)
+    }
+
+    suspend fun getLastWatering(plant: Plant): Watering? {
+        val watering = wateringDao.getLastWatering(plant.id)
+        return if (watering.isNotEmpty()) watering[0] else null
     }
 
     private fun getAllWatering(plant: Plant): LiveData<List<Watering>> {
         return wateringDao.getAll(plant.id)
     }
 
-    fun getLastFertilizing(plant: Plant): LiveData<List<Fertilizing>> {
-        return fertilizingDao.getLastFertilizing(plant.id)
+    fun observeLastFertilizing(plant: Plant): LiveData<List<Fertilizing>> {
+        return fertilizingDao.observeLastFertilizing(plant.id)
+    }
+
+    suspend fun getLastFertilizing(plant: Plant): Fertilizing? {
+        val fertilizing = fertilizingDao.getLastFertilizing(plant.id)
+        return if (fertilizing.isNotEmpty()) fertilizing[0] else null
     }
 
     private fun getAllFertilizing(plant: Plant): LiveData<List<Fertilizing>> {

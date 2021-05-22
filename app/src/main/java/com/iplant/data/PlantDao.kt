@@ -14,8 +14,8 @@ interface PlantDao {
     @Update
     suspend fun update(plant: Plant)
 
-    @Query("SELECT * FROM plant_table ORDER BY id ASC")
-    fun getAllOrderedById(): Flow<List<Plant>>
+    @Query("SELECT * FROM plant_table WHERE NOT (:hideDead AND death_date IS NOT NULL) ORDER BY id ASC")
+    fun getAllOrderedById(hideDead: Boolean): Flow<List<Plant>>
 
     @Query("SELECT watering_date FROM plant_table INNER JOIN watering_table ON plant_table.id = watering_table.plant_id WHERE plant_table.id = :plantId")
     fun getAllWateringDatesByPlantId(plantId: Long): List<LocalDate>

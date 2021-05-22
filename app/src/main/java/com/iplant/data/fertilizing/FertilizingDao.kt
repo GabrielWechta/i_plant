@@ -13,7 +13,10 @@ interface FertilizingDao {
     suspend fun insert(fertilizing: Fertilizing)
 
     @Query("select * from fertilizing_table where plant_id = :plantId order by fertilizing_date desc limit 1")
-    fun getLastFertilizing(plantId: Long): LiveData<List<Fertilizing>>
+    fun observeLastFertilizing(plantId: Long): LiveData<List<Fertilizing>>
+
+    @Query("select * from fertilizing_table where plant_id = :plantId order by fertilizing_date desc limit 1")
+    suspend fun getLastFertilizing(plantId: Long): List<Fertilizing>
 
     @Query("select * from fertilizing_table where plant_id = :plantId")
     fun getAll(plantId: Long): LiveData<List<Fertilizing>>

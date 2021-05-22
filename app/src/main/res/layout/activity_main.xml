@@ -11,14 +11,33 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            style="@style/ActivityHeader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:paddingHorizontal="16dp"
-            android:paddingTop="16dp"
-            android:text="@string/your_plants" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/ActivityHeader"
+                android:id="@+id/main_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="16dp"
+                android:text="@string/your_plants" />
+
+            <ImageButton
+                android:id="@+id/edit_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/main_header"
+                android:layout_alignBottom="@+id/main_header"
+                android:layout_alignParentEnd="true"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:src="@drawable/ic_more"
+                android:tint="@color/text_green" />
+        </RelativeLayout>
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
