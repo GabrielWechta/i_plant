@@ -20,4 +20,8 @@
     <color name="nice_green">#3d690f</color>
     <color name="pink">#EFDAD1</color>
 
+    <color name="waterish">#AA94daff</color>
+    <color name="drieish">#f9e8ce</color>
+
+    <color name="fertilizish">#994d0000</color>
 </resources>

@@ -56,6 +56,7 @@
                 android:background="?android:attr/selectableItemBackground"
                 android:src="@drawable/ic_more"
                 android:tint="@color/text_green" />
+
         </RelativeLayout>
 
         <LinearLayout
@@ -129,6 +130,33 @@
                         android:text="@string/last_fertilized" />
 
                 </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/curve_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp">
+
+                <com.broooapps.graphview.CurveGraphView
+                    android:id="@+id/fertilizing_curve_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.broooapps.graphview.CurveGraphView
+                    android:id="@+id/watering_curve_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
@@ -136,16 +164,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
                 app:cardCornerRadius="10dp">
 
                 <com.applandeo.materialcalendarview.CalendarView
                     android:id="@+id/history_calendar"
-                    app:headerColor="@color/text_green"
-                    app:todayLabelColor="@color/text_green"
                     android:layout_width="match_parent"
-                    android:layout_height="450dp" />
+                    android:layout_height="450dp"
+                    app:headerColor="@color/text_green"
+                    app:todayLabelColor="@color/text_green" />
 
             </androidx.cardview.widget.CardView>
+
         </LinearLayout>
 
         <androidx.cardview.widget.CardView

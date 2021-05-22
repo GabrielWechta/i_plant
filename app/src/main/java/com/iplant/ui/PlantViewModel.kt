@@ -40,7 +40,9 @@ class PlantViewModel(private val repository: PlantRepository) : ViewModel() {
 
     fun getAllEvents(plant: Plant) = repository.getAllEvents(plant)
 
+    fun getAllWatering(plant: Plant) = repository.getAllWatering(plant)
 
+    fun getAllFertilizing(plant: Plant) = repository.getAllFertilizing(plant)
 }
 
 class PlantViewModelFactory(private val repository: PlantRepository) : ViewModelProvider.Factory {
