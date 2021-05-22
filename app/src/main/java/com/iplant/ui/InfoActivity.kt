@@ -3,6 +3,7 @@ package com.iplant.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
@@ -75,6 +76,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 plantNick.text = it.caressing_name
                 commonName.text = it.common_name
                 buttonWater.setOnClickListener {
+                    datePicker.clearOnPositiveButtonClickListeners()
                     datePicker.addOnPositiveButtonClickListener {
                         val date = LocalDate.ofEpochDay(it / (1000 * 3600 * 24))
                         viewModel.addWateringNote(plant, date)
@@ -87,6 +89,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     datePicker.show(supportFragmentManager, "watering")
                 }
                 buttonFertilize.setOnClickListener {
+                    datePicker.clearOnPositiveButtonClickListeners()
                     datePicker.addOnPositiveButtonClickListener {
                         val date = LocalDate.ofEpochDay(it / (1000 * 3600 * 24))
                         viewModel.addFertilizingNote(plant, date)
@@ -97,7 +100,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                                     "dd/MM/uu"
                                 )
                             ),
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_SHORT
                         ).show()
                     }
                     datePicker.show(supportFragmentManager, "fertilizing")
