@@ -3,6 +3,8 @@ package com.iplant.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
@@ -12,6 +14,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.applandeo.materialcalendarview.EventDay
+import com.broooapps.graphview.CurveGraphConfig
+import com.broooapps.graphview.models.GraphData
+import com.broooapps.graphview.models.PointMap
 import com.google.android.material.datepicker.*
 import com.iplant.PlantsApplication
 import com.iplant.R
@@ -23,6 +28,7 @@ import java.time.Period.between
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     private val viewModel: PlantViewModel by viewModels {
@@ -175,6 +181,131 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     historyCalendar.setEvents(events)
                 })
 
+                viewModel.getAllFertilizing(plant)
+                    .observe(this@InfoActivity, Observer { plantFertilizing ->
+                        val fertilizingDates = arrayListOf<LocalDate>()
+                        var maxFertilizingDistance = 0
+                        plantFertilizing.forEach {
+                            fertilizingDates.add(it.fertilizing_date)
+                        }
+                        fertilizingDates.sort()
+                        val fertilizingPointMap = PointMap()
+                        for (i in 1 until fertilizingDates.size) {
+                            val diff = between(fertilizingDates[i - 1], fertilizingDates[i]).days
+                            if (diff > maxFertilizingDistance) {
+                                maxFertilizingDistance = diff
+                            }
+                            fertilizingPointMap.addPoint(i - 1, diff)
+                        }
+                        // adding today
+                        if (fertilizingDates.size > 0) {
+                            fertilizingPointMap.addPoint(
+                                fertilizingDates.size,
+                                between(
+                                    fertilizingDates[fertilizingDates.size - 1],
+                                    LocalDate.now()
+                                ).days
+                            )
+                        }
+                        val fertilizingGD = GraphData.builder(this@InfoActivity)
+                            .setPointMap(fertilizingPointMap)
+                            .setGraphStroke(R.color.creme)
+                            .setGraphGradient(
+                                R.color.drieish,
+                                R.color.fertilizish
+                            )
+
+                            .setStraightLine(false) // true for straight line; false for curved line graph
+                            .setPointRadius(0) // set point radius
+                            .setPointColor(R.color.waterish) // set point color
+                            .animateLine(true) // Trigger animation for the particular graph line!
+                            .build()
+
+                        val fertilizingGraphView = binding.fertilizingCurveView
+
+                        fertilizingGraphView.configure(
+                            CurveGraphConfig.Builder(this@InfoActivity)
+                                .setAxisColor(R.color.creme) // Set number of values to be displayed in X ax
+                                .setHorizontalGuideline(2)
+                                .setGuidelineColor(R.color.creme) // Set color of the visible guidelines.
+                                .setNoDataMsg(" No Data ") // Message when no data is provided to the view.
+                                .setxAxisScaleTextColor(R.color.creme) // Set X axis scale text color.
+                                .setyAxisScaleTextColor(R.color.creme) // Set Y axis scale text color
+                                .setAnimationDuration(4000) // Set Animation Duration
+                                .build()
+                        )
+                        Handler().postDelayed(Runnable {
+                            fertilizingGraphView.setData(
+                                fertilizingDates.size,
+                                maxFertilizingDistance,
+                                fertilizingGD
+                            )
+                        }, 350)
+                    })
+
+                viewModel.getAllWatering(plant)
+                    .observe(this@InfoActivity, Observer { plantWatering ->
+                        val wateringDates = arrayListOf<LocalDate>()
+                        var maxWateringDistance = 0
+                        plantWatering.forEach {
+                            wateringDates.add(it.watering_date)
+                        }
+                        wateringDates.sort()
+
+                        val wateringPointMap = PointMap()
+                        for (i in 1 until wateringDates.size) {
+                            val diff = between(wateringDates[i - 1], wateringDates[i]).days
+                            if (diff > maxWateringDistance) {
+                                maxWateringDistance = diff
+                            }
+                            wateringPointMap.addPoint(
+                                i - 1,
+                                diff
+                            )
+                        }
+                        // adding today
+                        if (wateringDates.size > 0) {
+                            wateringPointMap.addPoint(
+                                wateringDates.size,
+                                between(wateringDates[wateringDates.size - 1], LocalDate.now()).days
+                            )
+                        }
+                        val wateringGD = GraphData.builder(this@InfoActivity)
+                            .setPointMap(wateringPointMap)
+                            .setGraphStroke(R.color.creme)
+                            .setGraphGradient(
+                                R.color.drieish,
+                                R.color.waterish
+                            )
+                            .setStraightLine(false)
+                            .setPointRadius(0)
+                            .setPointColor(R.color.waterish)
+                            .animateLine(true)
+                            .build()
+
+                        val wateringGraphView = binding.wateringCurveView
+
+                        wateringGraphView.configure(
+                            CurveGraphConfig.Builder(this@InfoActivity)
+                                .setAxisColor(R.color.creme)
+                                .setHorizontalGuideline(2)
+                                .setGuidelineColor(R.color.creme)
+                                .setNoDataMsg(" No Data ")
+                                .setxAxisScaleTextColor(R.color.creme)
+                                .setyAxisScaleTextColor(R.color.creme)
+                                .setAnimationDuration(2500)
+                                .build()
+                        )
+
+                        Handler().postDelayed(Runnable {
+                            wateringGraphView.setData(
+                                wateringDates.size,
+                                maxWateringDistance,
+                                wateringGD
+                            )
+                        }, 250)
+                    })
+
                 if (plant.death_date != null) {
                     infoAlive.visibility = View.GONE
                     infoDead.visibility = View.VISIBLE
@@ -195,6 +326,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
         }
     }
+
 
     internal class EditContract : ActivityResultContract<Plant, Plant>() {
         override fun createIntent(context: Context, input: Plant?): Intent =

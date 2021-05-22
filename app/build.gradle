@@ -75,6 +75,9 @@ dependencies {
     implementation 'com.github.hackware1993:MagicIndicator:1.7.0'
     implementation 'com.applandeo:material-calendar-view:1.9.0-rc03'
 
+    // CurveGraphs
+    implementation 'com.github.swapnil1104:CurveGraphView:2.1'
+
     // Testing
     testImplementation "junit:junit:$rootProject.junitVersion"
     androidTestImplementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"

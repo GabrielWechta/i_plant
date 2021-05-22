@@ -17,13 +17,13 @@ class PlantRepository(private val database: PlantDatabase) {
 
     fun getAllPlants(hideDead: Boolean): Flow<List<Plant>> = plantDao.getAllOrderedById(hideDead)
 
-//    @Suppress("RedundantSuspendModifier")
+    //    @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun insert(plant: Plant) {
         plantDao.insert(plant)
     }
 
-//    @Suppress("RedundantSuspendModifier")
+    //    @Suppress("RedundantSuspendModifier")
     @WorkerThread
     suspend fun update(plant: Plant) {
         plantDao.update(plant)
@@ -50,7 +50,7 @@ class PlantRepository(private val database: PlantDatabase) {
         return if (watering.isNotEmpty()) watering[0] else null
     }
 
-    private fun getAllWatering(plant: Plant): LiveData<List<Watering>> {
+    fun getAllWatering(plant: Plant): LiveData<List<Watering>> {
         return wateringDao.getAll(plant.id)
     }
 
@@ -63,12 +63,12 @@ class PlantRepository(private val database: PlantDatabase) {
         return if (fertilizing.isNotEmpty()) fertilizing[0] else null
     }
 
-    private fun getAllFertilizing(plant: Plant): LiveData<List<Fertilizing>> {
+    fun getAllFertilizing(plant: Plant): LiveData<List<Fertilizing>> {
         return fertilizingDao.getAll(plant.id)
     }
 
     fun getAllEvents(plant: Plant): LiveData<List<PlantEvent>> {
-        val combined = object: MediatorLiveData<List<PlantEvent>>() {
+        val combined = object : MediatorLiveData<List<PlantEvent>>() {
             var wateringList: List<Watering> = listOf()
             var fertilizingList: List<Fertilizing> = listOf()
         }
