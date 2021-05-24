@@ -1,14 +1,16 @@
 package com.iplant.ui
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -18,10 +20,16 @@ import com.broooapps.graphview.CurveGraphConfig
 import com.broooapps.graphview.models.GraphData
 import com.broooapps.graphview.models.PointMap
 import com.google.android.material.datepicker.*
+import com.iplant.MediaAPI.CameraActivity
+import com.iplant.MediaAPI.DataModel
+import com.iplant.MediaAPI.JSONParser
+import com.iplant.MediaAPI.TwitterToken
 import com.iplant.PlantsApplication
 import com.iplant.R
 import com.iplant.data.Plant
 import com.iplant.data.PlantEvent
+import com.iplant.data.fertilizing.Fertilizing
+import com.iplant.data.watering.Watering
 import com.iplant.databinding.ActivityInfoBinding
 import java.time.LocalDate
 import java.time.Period.between
@@ -37,6 +45,15 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     var plant: Plant? = null
     lateinit var binding: ActivityInfoBinding
+    val jsp = JSONParser(this)
+    private val exportPlant = registerForActivityResult(JSONParser.CreateDocument()){ result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val uri  = result.data?.data
+            if (uri != null) {
+                jsp.writeToJSON(uri,DataModel(plant, Watering(0, LocalDate.now()), Fertilizing(0, LocalDate.now())))
+            }
+        }
+    }
     private val editPlant = registerForActivityResult(EditContract()) {
         it?.let {
             plant = it
@@ -44,12 +61,21 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             viewModel.update(it)
         }
     }
+    private  val addPicture = registerForActivityResult(CameraActivity.CreatePhoto())
+    {
+        TODO()
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
         plant = intent.getParcelableExtra("plant")
+        var photoButton :Button =  findViewById<Button>(R.id.photo_button);
+        photoButton.setOnClickListener {view:View ->
+            addPicture.launch("")
+        }
         binding.editButton.setOnClickListener {
             PopupMenu(this, it).apply {
                 setOnMenuItemClickListener(this@InfoActivity)
@@ -92,6 +118,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     }
                     datePicker.show(supportFragmentManager, "watering")
                 }
+
                 buttonFertilize.setOnClickListener {
                     datePicker.addOnPositiveButtonClickListener {
                         val date = LocalDate.ofEpochDay(it / (1000 * 3600 * 24))
@@ -343,6 +370,19 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 true
             }
             R.id.menu_gallery -> {
+                true
+            }
+            R.id.menu_export -> {
+
+                if (plant != null) {
+                    exportPlant.launch(jsp.generateName(plant!!))
+                }
+                true
+            }
+            R.id.menu_share ->{
+                if (plant != null) {
+                    TwitterToken.tryTweet(plant!!,this)
+                }
                 true
             }
             else -> false

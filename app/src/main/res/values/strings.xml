@@ -32,4 +32,6 @@
     <string name="last_watered">Last watered:\n%s</string>
     <string name="last_fertilized">Last fertilized:\n%s</string>
     <string name="hide_dead_plants">Hide dead plants</string>
+    <string name="export">Export...</string>
+    <string name="share_on_twitter">Share on Twitter</string>
 </resources>

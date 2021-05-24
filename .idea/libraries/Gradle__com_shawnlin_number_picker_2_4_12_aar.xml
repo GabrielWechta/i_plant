@@ -1,12 +1,12 @@
 <component name="libraryTable">
   <library name="Gradle: com.shawnlin:number-picker:2.4.12@aar">
     <ANNOTATIONS>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9c8ef05fc1c5c7affb17e7e06fcf0430/jetified-number-picker-2.4.12/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0a9835406fba120a1c1a3e05c8bc1660/jetified-number-picker-2.4.12/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9c8ef05fc1c5c7affb17e7e06fcf0430/jetified-number-picker-2.4.12/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9c8ef05fc1c5c7affb17e7e06fcf0430/jetified-number-picker-2.4.12/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9c8ef05fc1c5c7affb17e7e06fcf0430/jetified-number-picker-2.4.12/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0a9835406fba120a1c1a3e05c8bc1660/jetified-number-picker-2.4.12/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0a9835406fba120a1c1a3e05c8bc1660/jetified-number-picker-2.4.12/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0a9835406fba120a1c1a3e05c8bc1660/jetified-number-picker-2.4.12/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.shawnlin/number-picker/2.4.12/c28e19fe6863610fa95f67a63de20995d9d212cd/number-picker-2.4.12-javadoc.jar!/" />

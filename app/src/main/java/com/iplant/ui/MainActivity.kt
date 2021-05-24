@@ -1,25 +1,25 @@
 package com.iplant.ui
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.iplant.PlantsApplication
 import com.iplant.R
 import com.iplant.data.Plant
-import com.iplant.data.watering.Watering
 import com.iplant.databinding.ActivityMainBinding
 import java.time.LocalDate
 import java.time.Period.between
-import com.iplant.ui.PlantListAdapter.Status
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+
 
 class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener,
     PopupMenu.OnMenuItemClickListener {
@@ -61,6 +61,21 @@ class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener,
                 adapter.submitList(it)
             }
         })
+
+        val PERMISSION_ALL = 1
+        val PERMISSIONS = arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.INTERNET,
+            Manifest.permission.CAMERA
+        )
+
+        if (!hasPermissions(this, *PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL)
+        }
+    }
+    fun hasPermissions(context: Context, vararg permissions: String): Boolean = permissions.all {
+        ActivityCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onPlantClick(plant: Plant) {
