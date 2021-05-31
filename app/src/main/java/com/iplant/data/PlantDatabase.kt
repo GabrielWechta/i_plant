@@ -2,9 +2,12 @@ package com.iplant.data
 
 import android.content.Context
 import androidx.room.*
+import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.iplant.data.fertilizing.Fertilizing
 import com.iplant.data.fertilizing.FertilizingDao
+import com.iplant.data.images.PlantImage
+import com.iplant.data.images.PlantImagesDao
 import com.iplant.data.watering.Watering
 import com.iplant.data.watering.WateringDao
 import kotlinx.coroutines.CoroutineScope
@@ -12,8 +15,8 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Database(
-    entities = [Plant::class, Watering::class, Fertilizing::class],
-    version = 3,
+    entities = [Plant::class, Watering::class, Fertilizing::class,PlantImage::class],
+    version = 4,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -22,6 +25,7 @@ abstract class PlantDatabase : RoomDatabase() {
     abstract fun getPlantDao(): PlantDao
     abstract fun getWateringDao(): WateringDao
     abstract fun getFertilizingDao(): FertilizingDao
+    abstract fun getPlantImagesDao(): PlantImagesDao
 
     private class PlantDatabaseCallback(private val scope: CoroutineScope) :
         RoomDatabase.Callback() {
@@ -33,7 +37,8 @@ abstract class PlantDatabase : RoomDatabase() {
                     populateDatabase(
                         database.getPlantDao(),
                         database.getWateringDao(),
-                        database.getFertilizingDao()
+                        database.getFertilizingDao(),
+
                     )
                 }
             }
@@ -47,7 +52,7 @@ abstract class PlantDatabase : RoomDatabase() {
                     populateDatabase(
                         database.getPlantDao(),
                         database.getWateringDao(),
-                        database.getFertilizingDao()
+                        database.getFertilizingDao(),
                     )
                 }
             }
@@ -83,11 +88,22 @@ abstract class PlantDatabase : RoomDatabase() {
         }
     }
 
+    val MIGRATION_3_4 = object : Migration(3, 4){
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("CREATE TABLE IF NOT EXISTS `image_tale` (`plant_id` INTEGER,`image_id` INTEGER,`image_name` STRING(100) ,`image_date` STRING(100) , PRIMARY KEY(`image_id`))")
+        }
+    }
+
     companion object {
         @Volatile
         private var INSTANCE: PlantDatabase? = null
         fun getDatabase(context: Context, scope: CoroutineScope): PlantDatabase {
             return INSTANCE ?: synchronized(this) {
+                val MIGRATION_3_4 = object : Migration(3, 4){
+                    override fun migrate(database: SupportSQLiteDatabase) {
+                        database.execSQL("CREATE TABLE IF NOT EXISTS `image_tale` (`plant_id` INTEGER,`image_id` INTEGER,`image_name` STRING(100) ,`image_date` STRING(100) , PRIMARY KEY(`image_id`))")
+                    }
+                }
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     PlantDatabase::class.java,
@@ -96,7 +112,7 @@ abstract class PlantDatabase : RoomDatabase() {
                     PlantDatabaseCallback(
                         scope
                     )
-                )
+                ).addMigrations(MIGRATION_3_4)
                     .build()
                 INSTANCE = instance
                 instance

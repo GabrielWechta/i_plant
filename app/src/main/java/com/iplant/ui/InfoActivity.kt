@@ -32,6 +32,7 @@ import com.iplant.data.fertilizing.Fertilizing
 import com.iplant.data.watering.Watering
 import com.iplant.databinding.ActivityInfoBinding
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.Period.between
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -50,7 +51,9 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         if (result.resultCode == Activity.RESULT_OK) {
             val uri  = result.data?.data
             if (uri != null) {
-                jsp.writeToJSON(uri,DataModel(plant, Watering(0, LocalDate.now()), Fertilizing(0, LocalDate.now())))
+                jsp.writeToJSON(uri,DataModel(plant,
+                    plant?.let { viewModel.observeLastWatering(it).value?.firstOrNull() },
+                    plant?.let { viewModel.observeLastFertilizing(it).value?.firstOrNull() }))
             }
         }
     }
@@ -63,7 +66,15 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     }
     private  val addPicture = registerForActivityResult(CameraActivity.CreatePhoto())
     {
-        TODO()
+        if (it.resultCode == Activity.RESULT_OK)
+        {
+            val img = it.data?.getStringExtra("imageName")
+            plant?.let { it1 ->
+                if (img != null) {
+                    viewModel.addImage(it1, LocalDateTime.now(),img )
+                }
+            }
+        }
     }
 
 
@@ -74,7 +85,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         plant = intent.getParcelableExtra("plant")
         var photoButton :Button =  findViewById<Button>(R.id.photo_button);
         photoButton.setOnClickListener {view:View ->
-            addPicture.launch("")
+            addPicture.launch(plant?.let { viewModel.observeLastImage(it).value?.firstOrNull()?.image_name })
         }
         binding.editButton.setOnClickListener {
             PopupMenu(this, it).apply {

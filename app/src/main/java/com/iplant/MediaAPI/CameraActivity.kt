@@ -4,9 +4,12 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.appcompat.app.AppCompatActivity
@@ -29,7 +32,7 @@ class CameraActivity : AppCompatActivity() {
     private var imageCapture: ImageCapture? = null
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
-
+    private lateinit var previousImage: ImageView
 
 
 
@@ -39,6 +42,19 @@ class CameraActivity : AppCompatActivity() {
         setContentView(R.layout.activity_camera)
 
         supportActionBar?.hide()
+        val previewPath = intent.extras?.get("path") as String?
+        try {
+            val img = File(getOutputDirectory(),previewPath)
+            if(img.exists()) {
+                previousImage = findViewById(R.id.iv_preview)
+                previousImage.setImageURI(Uri.fromFile(img))
+            }
+        }
+        catch (e: Exception)
+        {
+        Log.println(Log.ERROR,null,e.toString())
+        }
+
 
         outputDirectory = getOutputDirectory()
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -111,7 +127,7 @@ class CameraActivity : AppCompatActivity() {
     }
 
     private fun getOutputDirectory(): File {
-        val mediaDir = externalMediaDirs.firstOrNull()?.let {
+        val mediaDir = Environment.getDataDirectory().let {
             File(it, resources.getString(R.string.app_name)).apply { mkdirs() }
         }
         return if (mediaDir != null && mediaDir.exists())
@@ -121,7 +137,6 @@ class CameraActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "CameraXGFG"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
     }
 
     override fun onDestroy() {

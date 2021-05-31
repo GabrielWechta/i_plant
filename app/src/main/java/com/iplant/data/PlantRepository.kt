@@ -6,14 +6,17 @@ import androidx.lifecycle.MediatorLiveData
 import com.iplant.data.Plant
 import com.iplant.data.PlantDao
 import com.iplant.data.fertilizing.Fertilizing
+import com.iplant.data.images.PlantImage
 import com.iplant.data.watering.Watering
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 class PlantRepository(private val database: PlantDatabase) {
     val plantDao = database.getPlantDao()
     val wateringDao = database.getWateringDao()
     val fertilizingDao = database.getFertilizingDao()
+    val plantImagesDao = database.getPlantImagesDao()
 
     fun getAllPlants(hideDead: Boolean): Flow<List<Plant>> = plantDao.getAllOrderedById(hideDead)
 
@@ -39,6 +42,22 @@ class PlantRepository(private val database: PlantDatabase) {
     suspend fun addFertilizingNote(plant: Plant, date: LocalDate) {
         val fertilizing = Fertilizing(plant.id, date)
         fertilizingDao.insert(fertilizing)
+    }
+
+    @WorkerThread
+    suspend fun addImage(plant: Plant,date: LocalDateTime,imageName: String)
+    {
+        plantImagesDao.insert(PlantImage(plant.id,date,imageName))
+    }
+
+    fun observeLastImage(plant:Plant):LiveData<List<PlantImage>>
+    {
+        return plantImagesDao.observeLastImage(plant.id)
+    }
+
+    fun observeAllImages(plant:Plant):LiveData<List<PlantImage>>
+    {
+        return plantImagesDao.observeAllImages(plant.id)
     }
 
     fun observeLastWatering(plant: Plant): LiveData<List<Watering>> {

@@ -19,4 +19,17 @@ class Converters
     fun toDateString(date: LocalDate?): String? {
         return date?.toString()
     }
+    @TypeConverter
+    fun toDateTime(dateString: String?): LocalDateTime? {
+        return if (dateString == null) {
+            null
+        } else {
+            LocalDateTime.parse(dateString)
+        }
+    }
+
+    @TypeConverter
+    fun toDateTimeString(date: LocalDateTime?): String? {
+        return date?.toString()
+    }
 }

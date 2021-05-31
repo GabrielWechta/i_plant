@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 class PlantViewModel(private val repository: PlantRepository) : ViewModel() {
     val hideDead = MutableStateFlow(false)
@@ -31,6 +32,13 @@ class PlantViewModel(private val repository: PlantRepository) : ViewModel() {
     fun addFertilizingNote(plant: Plant, date: LocalDate) = viewModelScope.launch {
         repository.addFertilizingNote(plant, date)
     }
+
+    fun addImage(plant: Plant, date: LocalDateTime, imgName:String) = viewModelScope.launch {
+        repository.addImage(plant,date,imgName)
+    }
+
+    fun observeLastImage(plant: Plant) = repository.observeLastImage(plant)
+    fun observeAllImages(plant: Plant) = repository.observeAllImages(plant)
 
     fun observeLastWatering(plant: Plant) = repository.observeLastWatering(plant)
     suspend fun getLastWatering(plant: Plant) = repository.getLastWatering(plant)
