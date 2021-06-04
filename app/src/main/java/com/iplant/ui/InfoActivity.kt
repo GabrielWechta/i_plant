@@ -21,9 +21,6 @@ import com.broooapps.graphview.CurveGraphConfig
 import com.broooapps.graphview.models.GraphData
 import com.broooapps.graphview.models.PointMap
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.google.android.material.datepicker.*
 import com.iplant.MediaAPI.CameraActivity
 import com.iplant.MediaAPI.DataModel
@@ -40,7 +37,6 @@ import java.time.LocalDateTime
 import java.time.Period.between
 import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
@@ -50,7 +46,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
     var plant: Plant? = null
     lateinit var binding: ActivityInfoBinding
-    val jsp = JSONParser(this)
+    private val jsp = JSONParser(this)
     private val exportPlant =
         registerForActivityResult(JSONParser.CreateDocument()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -78,7 +74,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             val img = it.data?.getStringExtra("imageName")
             img?.let {
                 val fullPath = File(path, img).toURI().toString()
-                Log.i("tutaj", "$fullPath")
+                Log.i("tutaj", fullPath)
                 plant?.let { it1 ->
                     viewModel.addImage(it1, LocalDateTime.now(), fullPath)
                 }
@@ -93,7 +89,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         setContentView(binding.root)
         plant = intent.getParcelableExtra("plant")
         plant?.let {
-            viewModel.observeLastImage(it).observe(this, Observer { images ->
+            viewModel.observeLastImage(it).observe(this, { images ->
                 if (images.isNotEmpty()) {
                     val photoUri: Uri = Uri.parse(images[0].image_name)
 
@@ -171,7 +167,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     datePicker.show(supportFragmentManager, "fertilizing")
                 }
 
-                viewModel.observeLastWatering(plant).observe(this@InfoActivity, Observer {
+                viewModel.observeLastWatering(plant).observe(this@InfoActivity, {
                     if (it.isNotEmpty()) {
                         val watering = it[0]
                         val diffText =
@@ -188,7 +184,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     }
                 })
 
-                viewModel.observeLastFertilizing(plant).observe(this@InfoActivity, Observer {
+                viewModel.observeLastFertilizing(plant).observe(this@InfoActivity, {
                     if (it.isNotEmpty()) {
                         val fertilizing = it[0]
                         val diffText = when (val diff =
@@ -216,7 +212,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     historyCalendar.setMinimumDate(minDate)
                 }
 
-                viewModel.getAllEvents(plant).observe(this@InfoActivity, Observer { plantEvents ->
+                viewModel.getAllEvents(plant).observe(this@InfoActivity, { plantEvents ->
                     val eventMap: HashMap<LocalDate, PlantEvent> = hashMapOf()
                     plantEvents.forEach {
                         val date = it.getEventDate()
@@ -244,7 +240,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 })
 
                 viewModel.getAllFertilizing(plant)
-                    .observe(this@InfoActivity, Observer { plantFertilizing ->
+                    .observe(this@InfoActivity, { plantFertilizing ->
                         val fertilizingDates = arrayListOf<LocalDate>()
                         var maxFertilizingDistance = 0
                         plantFertilizing.forEach {
@@ -296,7 +292,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                                 .setAnimationDuration(4000) // Set Animation Duration
                                 .build()
                         )
-                        Handler().postDelayed(Runnable {
+                        Handler().postDelayed({
                             fertilizingGraphView.setData(
                                 fertilizingDates.size,
                                 maxFertilizingDistance,
@@ -306,7 +302,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     })
 
                 viewModel.getAllWatering(plant)
-                    .observe(this@InfoActivity, Observer { plantWatering ->
+                    .observe(this@InfoActivity, { plantWatering ->
                         val wateringDates = arrayListOf<LocalDate>()
                         var maxWateringDistance = 0
                         plantWatering.forEach {
@@ -405,6 +401,9 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 true
             }
             R.id.menu_gallery -> {
+                val intent = Intent(this, GalleryActivity::class.java)
+                intent.putExtra("plant", plant)
+                startActivity(intent)
                 true
             }
             R.id.menu_export -> {
