@@ -409,6 +409,11 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 startActivity(intent)
                 true
             }
+            R.id.menu_lifeAnimation -> {
+                val lifeIntent = Intent(this, LifeAnimationActivity::class.java)
+                startActivity(lifeIntent)
+                true
+            }
             R.id.menu_export -> {
                 if (plant != null) {
                     exportPlant.launch(jsp.generateName(plant!!))
