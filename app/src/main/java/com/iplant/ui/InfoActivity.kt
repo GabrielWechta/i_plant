@@ -8,6 +8,7 @@ import android.os.Handler
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
@@ -19,6 +20,7 @@ import com.applandeo.materialcalendarview.EventDay
 import com.broooapps.graphview.CurveGraphConfig
 import com.broooapps.graphview.models.GraphData
 import com.broooapps.graphview.models.PointMap
+import com.bumptech.glide.Glide
 import com.google.android.material.datepicker.*
 import com.iplant.MediaAPI.CameraActivity
 import com.iplant.MediaAPI.DataModel
@@ -29,6 +31,7 @@ import com.iplant.R
 import com.iplant.data.Plant
 import com.iplant.data.PlantEvent
 import com.iplant.data.fertilizing.Fertilizing
+import com.iplant.data.images.PlantImage
 import com.iplant.data.watering.Watering
 import com.iplant.databinding.ActivityInfoBinding
 import java.time.LocalDate
@@ -45,18 +48,27 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     }
 
     var plant: Plant? = null
+    var lastFert: Fertilizing? = null
+    var lastWart: Watering? = null
+    var lastImg: PlantImage? = null
+
     lateinit var binding: ActivityInfoBinding
     val jsp = JSONParser(this)
-    private val exportPlant = registerForActivityResult(JSONParser.CreateDocument()){ result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val uri  = result.data?.data
-            if (uri != null) {
-                jsp.writeToJSON(uri,DataModel(plant,
-                    plant?.let { viewModel.observeLastWatering(it).value?.firstOrNull() },
-                    plant?.let { viewModel.observeLastFertilizing(it).value?.firstOrNull() }))
+    private val exportPlant =
+        registerForActivityResult(JSONParser.CreateDocument()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val uri = result.data?.data
+                if (uri != null) {
+                    jsp.writeToJSON(
+                        uri, DataModel(
+                            plant,
+                            lastWart,
+                            lastFert
+                        )
+                    )
+                }
             }
         }
-    }
     private val editPlant = registerForActivityResult(EditContract()) {
         it?.let {
             plant = it
@@ -64,14 +76,13 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             viewModel.update(it)
         }
     }
-    private  val addPicture = registerForActivityResult(CameraActivity.CreatePhoto())
+    private val addPicture = registerForActivityResult(CameraActivity.CreatePhoto())
     {
-        if (it.resultCode == Activity.RESULT_OK)
-        {
+        if (it.resultCode == Activity.RESULT_OK) {
             val img = it.data?.getStringExtra("imageName")
             plant?.let { it1 ->
                 if (img != null) {
-                    viewModel.addImage(it1, LocalDateTime.now(),img )
+                    viewModel.addImage(it1, LocalDateTime.now(), img)
                 }
             }
         }
@@ -83,9 +94,9 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         binding = ActivityInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
         plant = intent.getParcelableExtra("plant")
-        var photoButton :Button =  findViewById<Button>(R.id.photo_button);
-        photoButton.setOnClickListener {view:View ->
-            addPicture.launch(plant?.let { viewModel.observeLastImage(it).value?.firstOrNull()?.image_name })
+        var photoButton: Button = findViewById<Button>(R.id.photo_button);
+        photoButton.setOnClickListener { view: View ->
+            addPicture.launch(lastImg?.image_name)
         }
         binding.editButton.setOnClickListener {
             PopupMenu(this, it).apply {
@@ -147,8 +158,11 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     datePicker.show(supportFragmentManager, "fertilizing")
                 }
 
+
+
                 viewModel.observeLastWatering(plant).observe(this@InfoActivity, Observer {
                     if (it.isNotEmpty()) {
+                        lastWart = it[0]
                         val watering = it[0]
                         val diffText =
                             when (val diff =
@@ -163,9 +177,20 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                         lastWateredText.text = getString(R.string.last_watered, "never")
                     }
                 })
+                viewModel.observeLastImage(plant).observe(this@InfoActivity, Observer {
+                    if (it.isNotEmpty()) {
+                        lastImg = it[0]
+                        val view =  findViewById<ImageView>(R.id.imageView)
+                        val imgFile = lastImg?.getFile(this@InfoActivity)
+                        if(imgFile != null && imgFile.exists()) {
+                            Glide.with(this@InfoActivity).load(imgFile).into(view);
+                        }
+                    }
+                })
 
                 viewModel.observeLastFertilizing(plant).observe(this@InfoActivity, Observer {
                     if (it.isNotEmpty()) {
+                        lastFert = it[0]
                         val fertilizing = it[0]
                         val diffText = when (val diff =
                             between(fertilizing.fertilizing_date, LocalDate.now()).days) {
@@ -390,9 +415,9 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 }
                 true
             }
-            R.id.menu_share ->{
+            R.id.menu_share -> {
                 if (plant != null) {
-                    TwitterToken.tryTweet(plant!!,this)
+                    TwitterToken.tryTweet(plant!!, this)
                 }
                 true
             }

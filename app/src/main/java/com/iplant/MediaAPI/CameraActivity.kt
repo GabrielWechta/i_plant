@@ -20,6 +20,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
 import com.iplant.R
 import java.io.File
 import java.text.SimpleDateFormat
@@ -42,12 +43,12 @@ class CameraActivity : AppCompatActivity() {
         setContentView(R.layout.activity_camera)
 
         supportActionBar?.hide()
-        val previewPath = intent.extras?.get("path") as String?
+        val previewPath = intent.getStringExtra("path")
         try {
             val img = File(getOutputDirectory(),previewPath)
             if(img.exists()) {
                 previousImage = findViewById(R.id.iv_preview)
-                previousImage.setImageURI(Uri.fromFile(img))
+                Glide.with(this).load(img).into(previousImage);
             }
         }
         catch (e: Exception)
