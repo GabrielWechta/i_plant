@@ -3,11 +3,12 @@ package com.iplant.ui
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
@@ -19,6 +20,10 @@ import com.applandeo.materialcalendarview.EventDay
 import com.broooapps.graphview.CurveGraphConfig
 import com.broooapps.graphview.models.GraphData
 import com.broooapps.graphview.models.PointMap
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.google.android.material.datepicker.*
 import com.iplant.MediaAPI.CameraActivity
 import com.iplant.MediaAPI.DataModel
@@ -28,9 +33,8 @@ import com.iplant.PlantsApplication
 import com.iplant.R
 import com.iplant.data.Plant
 import com.iplant.data.PlantEvent
-import com.iplant.data.fertilizing.Fertilizing
-import com.iplant.data.watering.Watering
 import com.iplant.databinding.ActivityInfoBinding
+import java.io.File
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Period.between
@@ -47,16 +51,19 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
     var plant: Plant? = null
     lateinit var binding: ActivityInfoBinding
     val jsp = JSONParser(this)
-    private val exportPlant = registerForActivityResult(JSONParser.CreateDocument()){ result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val uri  = result.data?.data
-            if (uri != null) {
-                jsp.writeToJSON(uri,DataModel(plant,
-                    plant?.let { viewModel.observeLastWatering(it).value?.firstOrNull() },
-                    plant?.let { viewModel.observeLastFertilizing(it).value?.firstOrNull() }))
+    private val exportPlant =
+        registerForActivityResult(JSONParser.CreateDocument()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val uri = result.data?.data
+                if (uri != null) {
+                    jsp.writeToJSON(
+                        uri, DataModel(plant,
+                            plant?.let { viewModel.observeLastWatering(it).value?.firstOrNull() },
+                            plant?.let { viewModel.observeLastFertilizing(it).value?.firstOrNull() })
+                    )
+                }
             }
         }
-    }
     private val editPlant = registerForActivityResult(EditContract()) {
         it?.let {
             plant = it
@@ -64,14 +71,16 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             viewModel.update(it)
         }
     }
-    private  val addPicture = registerForActivityResult(CameraActivity.CreatePhoto())
+    private val addPicture = registerForActivityResult(CameraActivity.CreatePhoto())
     {
-        if (it.resultCode == Activity.RESULT_OK)
-        {
+        if (it.resultCode == Activity.RESULT_OK) {
+            val path = it.data?.getStringExtra("imagePath")
             val img = it.data?.getStringExtra("imageName")
-            plant?.let { it1 ->
-                if (img != null) {
-                    viewModel.addImage(it1, LocalDateTime.now(),img )
+            img?.let {
+                val fullPath = File(path, img).toURI().toString()
+                Log.i("tutaj", "$fullPath")
+                plant?.let { it1 ->
+                    viewModel.addImage(it1, LocalDateTime.now(), fullPath)
                 }
             }
         }
@@ -83,9 +92,22 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         binding = ActivityInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
         plant = intent.getParcelableExtra("plant")
-        var photoButton :Button =  findViewById<Button>(R.id.photo_button);
-        photoButton.setOnClickListener {view:View ->
-            addPicture.launch(plant?.let { viewModel.observeLastImage(it).value?.firstOrNull()?.image_name })
+        plant?.let {
+            viewModel.observeLastImage(it).observe(this, Observer { images ->
+                if (images.isNotEmpty()) {
+                    val photoUri: Uri = Uri.parse(images[0].image_name)
+
+                    Glide.with(this)
+                        .load(photoUri)
+                        .centerCrop()
+                        .into(binding.imageView)
+                }
+            })
+        }
+        binding.photoButton.setOnClickListener {
+            addPicture.launch(plant?.let {
+                viewModel.observeLastImage(it).value?.firstOrNull()?.image_name
+            })
         }
         binding.editButton.setOnClickListener {
             PopupMenu(this, it).apply {
@@ -119,6 +141,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 commonName.text = it.common_name
                 buttonWater.setOnClickListener {
                     datePicker.addOnPositiveButtonClickListener {
+                        datePicker.clearOnPositiveButtonClickListeners()
                         val date = LocalDate.ofEpochDay(it / (1000 * 3600 * 24))
                         viewModel.addWateringNote(plant, date)
                         Toast.makeText(
@@ -132,6 +155,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
                 buttonFertilize.setOnClickListener {
                     datePicker.addOnPositiveButtonClickListener {
+                        datePicker.clearOnPositiveButtonClickListeners()
                         val date = LocalDate.ofEpochDay(it / (1000 * 3600 * 24))
                         viewModel.addFertilizingNote(plant, date)
                         Toast.makeText(
@@ -384,15 +408,14 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 true
             }
             R.id.menu_export -> {
-
                 if (plant != null) {
                     exportPlant.launch(jsp.generateName(plant!!))
                 }
                 true
             }
-            R.id.menu_share ->{
+            R.id.menu_share -> {
                 if (plant != null) {
-                    TwitterToken.tryTweet(plant!!,this)
+                    TwitterToken.tryTweet(plant!!, this)
                 }
                 true
             }

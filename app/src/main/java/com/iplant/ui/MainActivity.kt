@@ -11,11 +11,13 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.iplant.PlantsApplication
 import com.iplant.R
 import com.iplant.data.Plant
+import com.iplant.data.images.PlantImage
 import com.iplant.databinding.ActivityMainBinding
 import java.time.LocalDate
 import java.time.Period.between
@@ -82,6 +84,10 @@ class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener,
         val intent = Intent(this, InfoActivity::class.java)
         intent.putExtra("plant", plant)
         startActivity(intent)
+    }
+
+    override suspend fun getLastPhoto(plant: Plant): PlantImage? {
+        return plantViewModel.getLastImage(plant)
     }
 
     override suspend fun checkIfNeedsWatering(plant: Plant): Boolean {

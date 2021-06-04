@@ -69,12 +69,12 @@ abstract class PlantDatabase : RoomDatabase() {
                 caressing_name = "Adam",
                 common_name = "Aloes",
                 scientific_name = "Aloe Vera",
-                adding_date = LocalDate.now(),
+                adding_date = LocalDate.now().minusMonths(2),
                 light = "a lot",
                 watering_period = 14,
                 fertilizing_period = 30,
-                death_date = LocalDate.now(),
-                death_cause = "drug overdose"
+                death_date = null,
+                death_cause = null
             )
             plantDao.insert(plant)
 
