@@ -14,6 +14,9 @@ interface PlantImagesDao {
     @Query("select * from image_table where plant_id = :plantId order by image_date desc limit 1")
     fun observeLastImage(plantId: Long): LiveData<List<PlantImage>>
 
+    @Query("select * from image_table where plant_id = :plantId order by image_date desc limit 1")
+    suspend fun getLastImage(plantId: Long): List<PlantImage>
+
     @Query("select * from image_table where plant_id = :plantId order by image_date desc")
     fun observeAllImages(plantId: Long): LiveData<List<PlantImage>>
 

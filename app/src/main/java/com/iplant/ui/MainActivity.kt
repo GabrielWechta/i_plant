@@ -2,6 +2,7 @@ package com.iplant.ui
 
 import android.Manifest
 import android.app.Activity
+import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -20,8 +21,11 @@ import com.iplant.PlantsApplication
 import com.iplant.R
 import com.iplant.data.Plant
 import com.iplant.databinding.ActivityMainBinding
+import com.iplant.notification.NotificationsMaker
+import java.io.File
 import java.time.LocalDate
 import java.time.Period.between
+import java.util.*
 
 
 class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener,
@@ -51,6 +55,12 @@ class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener,
     private val addPlant = registerForActivityResult(AddingContract()) {
         it?.let {
             plantViewModel.insert(it)
+
+            val alarmManager: AlarmManager =
+                getSystemService(ALARM_SERVICE) as AlarmManager
+
+            NotificationsMaker.makeWateringNotification(this, it, alarmManager)
+            NotificationsMaker.makeFertilizingNotification(this, it, alarmManager)
         }
     }
 
@@ -99,6 +109,7 @@ class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener,
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL)
         }
     }
+
     fun hasPermissions(context: Context, vararg permissions: String): Boolean = permissions.all {
         ActivityCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
     }
@@ -107,6 +118,10 @@ class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener,
         val intent = Intent(this, InfoActivity::class.java)
         intent.putExtra("plant", plant)
         startActivity(intent)
+    }
+
+    override suspend fun getLastPhoto(plant: Plant): File? {
+        return plantViewModel.getLastImage(plant)?.getFile(this)
     }
 
     override suspend fun checkIfNeedsWatering(plant: Plant): Boolean {
@@ -149,4 +164,6 @@ class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener,
             else -> false
         }
     }
+
+
 }

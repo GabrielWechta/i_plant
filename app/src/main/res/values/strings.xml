@@ -34,4 +34,7 @@
     <string name="hide_dead_plants">Hide dead plants</string>
     <string name="export">Export...</string>
     <string name="share_on_twitter">Share on Twitter</string>
+    <string name="click_a_photo_to_preview">Click a photo to preview</string>
+    <string name="channel_name">plant_watering</string>
+    <string name="channel_description">podlej mnie</string>
 </resources>

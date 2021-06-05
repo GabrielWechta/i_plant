@@ -4,11 +4,15 @@ import android.os.Environment
 import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.akshaykale.swipetimeline.TimelineObject
 import com.iplant.R
 import kotlinx.android.parcel.Parcelize
 import java.io.File
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 
 
 @Parcelize
@@ -18,6 +22,13 @@ class PlantImage (val plant_id: Long,
                   val image_name:String,
                   @PrimaryKey(autoGenerate = true) val image_id: Long = 0
 ) : Parcelable {
+    fun getTimestamp(): Long {
+        return image_date.toEpochSecond(ZoneOffset.UTC) * 1000
+    }
+
+    fun getTitle(): String {
+        return image_date.format(DateTimeFormatter.ofPattern("HH:mm"))
+    }
 
     fun getFile(context: Context): File {
         val mediaDir = Environment.getDataDirectory().let {

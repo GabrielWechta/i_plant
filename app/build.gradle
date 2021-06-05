@@ -80,6 +80,7 @@ dependencies {
     implementation "androidx.viewpager2:viewpager2:1.0.0"
     implementation 'com.github.hackware1993:MagicIndicator:1.7.0'
     implementation 'com.applandeo:material-calendar-view:1.9.0-rc03'
+    implementation 'com.akshaykale.android:android-timeline-view:2.1'
 
     // CurveGraphs
     implementation 'com.github.swapnil1104:CurveGraphView:2.1'
