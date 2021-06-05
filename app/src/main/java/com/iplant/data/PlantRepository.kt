@@ -70,7 +70,7 @@ class PlantRepository(private val database: PlantDatabase) {
     }
 
 
-    fun observeLastImage(plant: Plant): LiveData<List<PlantImage>> {ł
+    fun observeLastImage(plant: Plant): LiveData<List<PlantImage>> {
         return plantImagesDao.observeLastImage(plant.id)
     }
 
