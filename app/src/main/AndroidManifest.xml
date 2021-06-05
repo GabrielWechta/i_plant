@@ -17,17 +17,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.IPlant">
-        <activity android:name=".ui.GalleryActivity"></activity>
+        <activity android:name=".ui.GalleryActivity" />
         <activity android:name=".MediaAPI.CameraActivity" />
         <activity android:name=".ui.InfoActivity" />
         <activity android:name=".ui.AddEditPlantActivity" />
         <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".notification.ReminderBroadcast" />
 
         <meta-data
             android:name="preloaded_fonts"

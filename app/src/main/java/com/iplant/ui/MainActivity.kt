@@ -13,20 +13,16 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.iplant.PlantsApplication
 import com.iplant.R
 import com.iplant.data.Plant
-import com.iplant.data.images.PlantImage
 import com.iplant.databinding.ActivityMainBinding
 import com.iplant.notification.ReminderBroadcast
 import java.io.File
 import java.time.LocalDate
 import java.time.Period.between
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import java.util.*
 
 
@@ -38,19 +34,46 @@ class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener,
     private val addPlant = registerForActivityResult(AddingContract()) {
         it?.let {
             plantViewModel.insert(it)
-            var intent = Intent(this, ReminderBroadcast::class.java)
-            intent.putExtra("plant", it)
-            var pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+            val intentWatering = Intent(this, ReminderBroadcast::class.java)
+            intentWatering.putExtra("message", "Your plant needs watering")
+            intentWatering.putExtra("id", it.id.toInt() * 2)
+            intentWatering.putExtra("name", it.caressing_name)
 
+            val pendingIntentWatering =
+                PendingIntent.getBroadcast(
+                    this,
+                    0,
+                    intentWatering,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
 
-            var alarmManager: AlarmManager =
+            val intentFertilizing = Intent(this, ReminderBroadcast::class.java)
+            intentFertilizing.putExtra("message", "Your plant needs fertilizing")
+            intentFertilizing.putExtra("id", it.id.toInt() * 2 + 1)
+            intentFertilizing.putExtra("name", it.caressing_name)
+
+            val pendingIntentFertilizing =
+                PendingIntent.getBroadcast(
+                    this,
+                    1,
+                    intentFertilizing,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
+
+            val alarmManager: AlarmManager =
                 getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
-            alarmManager.setExact(
+
+            alarmManager.set(
                 AlarmManager.RTC_WAKEUP,
-                Calendar.getInstance().timeInMillis,
-                pendingIntent
+                System.currentTimeMillis(),
+                pendingIntentWatering
             )
-            finish()
+
+            alarmManager.set(
+                AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis(),
+                pendingIntentFertilizing
+            )
 
         }
     }

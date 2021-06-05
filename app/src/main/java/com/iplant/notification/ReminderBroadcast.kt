@@ -1,30 +1,28 @@
 package com.iplant.notification
 
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.iplant.R
-import com.iplant.data.Plant
 
 class ReminderBroadcast : BroadcastReceiver() {
 
     /** Receive and build notification */
-    override fun onReceive(context: Context, intent: Intent ) {
+    override fun onReceive(context: Context, intent: Intent) {
 
-        var plant = intent.getParcelableExtra<Plant>("plant")
-        var builder = NotificationCompat.Builder(context, R.string.reminder_channel.toString())
-            .setSmallIcon(R.drawable.ic_notyfication)
-            .setContentTitle(plant?.caressing_name)
-            .setContentText("Description")
+        val plantName = intent.getStringExtra("name")
+        val notificationId = intent.getIntExtra("id", 0)
+        val message = intent.getStringExtra("message")
+        val builder = NotificationCompat.Builder(context, "upcoming")
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(plantName)
+            .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
-        var notificationManger =NotificationManagerCompat.from(context)
-        notificationManger.notify(200,builder.build())
+        val notificationManger = NotificationManagerCompat.from(context)
+        notificationManger.notify(notificationId, builder.build())
     }
 
 //    USE IN FUTURE TO SET NOTIFICATION
