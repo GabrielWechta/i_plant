@@ -3,8 +3,7 @@ package com.iplant.ui
 import android.app.ActionBar.LayoutParams
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
-import android.util.Log
+import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
@@ -12,24 +11,28 @@ import android.widget.ImageSwitcher
 import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.lifecycle.Observer
-import com.bumptech.glide.Glide
 import com.iplant.PlantsApplication
 import com.iplant.R
 import com.iplant.data.Plant
 
 
 class LifeAnimationActivity : AppCompatActivity() {
+    var index = 0
     private val viewModel: PlantViewModel by viewModels {
         PlantViewModelFactory((application as PlantsApplication).repository)
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_life_animation)
 
         val inAnim: Animation = AnimationUtils.loadAnimation(this, R.anim.fade_in)
+        inAnim.duration = 1500
         val outAnim: Animation = AnimationUtils.loadAnimation(this, R.anim.fade_out)
+        outAnim.duration = 1500
 
         val imageSwitcher = findViewById<ImageSwitcher>(R.id.slide_trans_imageswitcher)
         imageSwitcher.inAnimation = inAnim
@@ -45,36 +48,28 @@ class LifeAnimationActivity : AppCompatActivity() {
             myView
         }
 
+
         val plant: Plant? = intent.getParcelableExtra("plant")
         if (plant == null) {
             finish()
         } else {
             viewModel.observeAllImages(plant).observe(this, Observer { images ->
-//                var animationCounter = images.size
-                val imageSwitcherHandler = Handler(Looper.getMainLooper())
+                val sortedImages = images.sortedBy { it.image_name }
 
-                imageSwitcherHandler.post(object : Runnable {
+                val handler = Handler()
+                val runnable: Runnable = object : Runnable {
                     override fun run() {
-                        images.forEach { image ->
-                            Log.e("ivan", image.image_name)
-                            Glide.with(this@LifeAnimationActivity).load(image.image_name)
-                                .into((imageSwitcher.nextView as ImageView))
-                        }
-
-//                        when (animationCounter++) {
-//                            1 -> imageSwitcher.setImageResource(R.drawable.life_animation_top)
-//                            2 -> imageSwitcher.setImageResource(R.drawable.life_animation_bottom)
-//                        }
-//                        animationCounter %= 3
-//                        if (animationCounter == 0) animationCounter = 1
-                        imageSwitcherHandler.postDelayed(this, 3000)
-
+                        index++
+                        index %= sortedImages.size
+                        imageSwitcher.setImageURI(
+                            sortedImages[index].getFile(this@LifeAnimationActivity).toUri()
+                        )
+                        handler.postDelayed(this, 1000)
                     }
-                })
+                }
+                handler.postDelayed(runnable, 1000)
 
             })
         }
-
-
     }
 }
