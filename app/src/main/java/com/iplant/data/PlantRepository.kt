@@ -3,8 +3,7 @@ package com.iplant.data
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.iplant.data.Plant
-import com.iplant.data.PlantDao
+import com.iplant.MediaAPI.DataModel
 import com.iplant.data.fertilizing.Fertilizing
 import com.iplant.data.images.PlantImage
 import com.iplant.data.watering.Watering
@@ -48,6 +47,30 @@ class PlantRepository(private val database: PlantDatabase) {
     suspend fun addImage(plant: Plant,date: LocalDateTime,imageName: String)
     {
         plantImagesDao.insert(PlantImage(plant.id,date,imageName))
+    }
+
+    @WorkerThread
+    suspend  fun insertData(dm: DataModel) {
+        dm.plant?.let {
+
+            val plant = Plant(it.caressing_name,
+                                it.common_name,
+                                it.scientific_name,
+                                it.adding_date,
+                                it.light,
+                                it.watering_period,
+                                it.fertilizing_period)
+            val newId = plantDao.insertWithId(plant)
+            dm.fertilizing?.let {
+                fertilizingDao.insert(Fertilizing(newId,it.fertilizing_date))
+            }
+            dm.watering?.let {
+                wateringDao.insert(Watering(newId,it.watering_date))
+            }
+        }
+
+
+
     }
 
     fun observeLastImage(plant:Plant):LiveData<List<PlantImage>>
@@ -103,6 +126,8 @@ class PlantRepository(private val database: PlantDatabase) {
         }
         return combined
     }
+
+
 
 
 }

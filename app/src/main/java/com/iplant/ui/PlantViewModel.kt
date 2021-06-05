@@ -1,8 +1,10 @@
 package com.iplant.ui
 
 import androidx.lifecycle.*
+import com.iplant.MediaAPI.DataModel
 import com.iplant.data.Plant
 import com.iplant.data.PlantRepository
+import com.iplant.data.images.PlantImage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
@@ -16,10 +18,10 @@ class PlantViewModel(private val repository: PlantRepository) : ViewModel() {
         repository.getAllPlants(hideDead = it)
     }.asLiveData()
 
-
     fun insert(plant: Plant) = viewModelScope.launch {
         repository.insert(plant)
     }
+
 
     fun update(plant: Plant) = viewModelScope.launch {
         repository.update(plant)
@@ -37,6 +39,10 @@ class PlantViewModel(private val repository: PlantRepository) : ViewModel() {
         repository.addImage(plant,date,imgName)
     }
 
+    fun insertData(it: DataModel) = viewModelScope.launch  {
+        repository.insertData(it)
+    }
+
     fun observeLastImage(plant: Plant) = repository.observeLastImage(plant)
     fun observeAllImages(plant: Plant) = repository.observeAllImages(plant)
 
@@ -51,6 +57,7 @@ class PlantViewModel(private val repository: PlantRepository) : ViewModel() {
     fun getAllWatering(plant: Plant) = repository.getAllWatering(plant)
 
     fun getAllFertilizing(plant: Plant) = repository.getAllFertilizing(plant)
+
 }
 
 class PlantViewModelFactory(private val repository: PlantRepository) : ViewModelProvider.Factory {

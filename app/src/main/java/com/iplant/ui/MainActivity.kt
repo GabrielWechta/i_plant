@@ -1,18 +1,21 @@
 package com.iplant.ui
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.PopupMenu
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.iplant.MediaAPI.JSONParser
 import com.iplant.PlantsApplication
 import com.iplant.R
 import com.iplant.data.Plant
@@ -23,9 +26,28 @@ import java.time.Period.between
 
 class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener,
     PopupMenu.OnMenuItemClickListener {
+
     private val plantViewModel: PlantViewModel by viewModels {
         PlantViewModelFactory((application as PlantsApplication).repository)
     }
+
+    val jsp = JSONParser(this)
+    private val importPlant =
+        registerForActivityResult(JSONParser.ReadDocument()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val uri = result.data?.data
+                if (uri != null) {
+                    val plantData =  jsp.readFromJSON(uri)
+                    plantData.let {
+                        if (it != null) {
+                            plantViewModel.insertData(it)
+                        }
+                    }
+
+                }
+            }
+        }
+
     private val addPlant = registerForActivityResult(AddingContract()) {
         it?.let {
             plantViewModel.insert(it)
@@ -34,6 +56,9 @@ class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -115,6 +140,10 @@ class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener,
             R.id.menu_hide -> {
                 item.isChecked = !item.isChecked
                 plantViewModel.hideDead.value = item.isChecked
+                true
+            }
+            R.id.menu_import -> {
+                importPlant.launch(null)
                 true
             }
             else -> false
