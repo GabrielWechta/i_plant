@@ -24,6 +24,7 @@ import com.iplant.data.watering.Watering
 import com.iplant.databinding.RecyclerviewItemBinding
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import java.io.File
 import java.time.format.DateTimeFormatter
 import java.util.*
 
@@ -35,7 +36,7 @@ class PlantListAdapter(
 
     interface PlantClickListener {
         fun onPlantClick(plant: Plant)
-        suspend fun getLastPhoto(plant: Plant): PlantImage?
+        suspend fun getLastPhoto(plant: Plant): File?
         suspend fun checkIfNeedsWatering(plant: Plant): Boolean
         suspend fun checkIfNeedsFertilizing(plant: Plant): Boolean
     }
@@ -65,16 +66,15 @@ class PlantListAdapter(
                 cardNick.text = plant.caressing_name
                 cardCommonName.text =
                     context.getString(R.string.common_name_placeholder, plant.common_name)
-                var photo: PlantImage? = null
-                val job = GlobalScope.launch {
+                GlobalScope.launch {
                     val needsWatering = clickListener.checkIfNeedsWatering(plant)
                     val needsFertilizing = clickListener.checkIfNeedsFertilizing(plant)
                     status = status.getStatus(plant, needsWatering, needsFertilizing)
                     updateStatusMessage()
-                    photo = clickListener.getLastPhoto(plant)
+                    val photo = clickListener.getLastPhoto(plant)
                     Handler(context.mainLooper).post {
                         photo?.let {
-                            Glide.with(context).load(it.image_name).centerCrop().into(cardImage)
+                            Glide.with(context).load(it).centerCrop().into(cardImage)
                         }
                     }
                 }

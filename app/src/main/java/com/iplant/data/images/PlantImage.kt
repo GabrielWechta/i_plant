@@ -21,17 +21,13 @@ class PlantImage (val plant_id: Long,
                   val image_date: LocalDateTime,
                   val image_name:String,
                   @PrimaryKey(autoGenerate = true) val image_id: Long = 0
-) : Parcelable, TimelineObject {
-    override fun getTimestamp(): Long {
+) : Parcelable {
+    fun getTimestamp(): Long {
         return image_date.toEpochSecond(ZoneOffset.UTC) * 1000
     }
 
-    override fun getTitle(): String {
+    fun getTitle(): String {
         return image_date.format(DateTimeFormatter.ofPattern("HH:mm"))
-    }
-
-    override fun getImageUrl(): String {
-        return image_name
     }
 
     fun getFile(context: Context): File {

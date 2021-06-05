@@ -1,10 +1,8 @@
 package com.iplant.MediaAPI
 
-import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
@@ -36,26 +34,19 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var previousImage: ImageView
 
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
 
         supportActionBar?.hide()
         val previewPath = intent.getStringExtra("path")
-        try {
-            val img = File(getOutputDirectory(),previewPath)
-            if(img.exists()) {
+        previewPath?.let {
+            val img = File(getOutputDirectory(), previewPath)
+            if (img.exists()) {
                 previousImage = findViewById(R.id.iv_preview)
-                Glide.with(this).load(img).into(previousImage);
+                Glide.with(this).load(img).centerCrop().into(previousImage);
             }
         }
-        catch (e: Exception)
-        {
-        Log.println(Log.ERROR,null,e.toString())
-        }
-
 
         outputDirectory = getOutputDirectory()
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -63,10 +54,11 @@ class CameraActivity : AppCompatActivity() {
     }
 
 
-    fun takePhoto(view:View) {
+    fun takePhoto(view: View) {
 
         val imageCapture = imageCapture ?: return
-        val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(System.currentTimeMillis()) + ".jpg"
+        val name =
+            SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(System.currentTimeMillis()) + ".jpg"
         val photoFile = File(
             outputDirectory,
             name
@@ -86,7 +78,7 @@ class CameraActivity : AppCompatActivity() {
 
                     val resultIntent = Intent()
                     resultIntent.putExtra("imagePath", outputDirectory.getAbsolutePath())
-                    resultIntent.putExtra("imageName",name)
+                    resultIntent.putExtra("imageName", name)
                     resultIntent.putExtra("requestCode", 100);
                     setResult(Activity.RESULT_OK, resultIntent)
                     finish()
@@ -151,6 +143,7 @@ class CameraActivity : AppCompatActivity() {
             intent.putExtra("path", filePath);
             return intent
         }
+
         override fun parseResult(resultCode: Int, intent: Intent?): ActivityResult? =
             ActivityResult(resultCode, intent)
     }

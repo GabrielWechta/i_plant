@@ -3,21 +3,16 @@ package com.iplant.ui
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import com.applandeo.materialcalendarview.EventDay
 import com.broooapps.graphview.CurveGraphConfig
 import com.broooapps.graphview.models.GraphData
@@ -36,7 +31,6 @@ import com.iplant.data.fertilizing.Fertilizing
 import com.iplant.data.images.PlantImage
 import com.iplant.data.watering.Watering
 import com.iplant.databinding.ActivityInfoBinding
-import java.io.File
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Period.between
@@ -103,6 +97,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             viewModel.observeLastImage(it).observe(this, { images ->
                 if (images.isNotEmpty()) {
                     val photo = images[0].getFile(this)
+                    lastImg = images[0]
 
                     Glide.with(this)
                         .load(photo)

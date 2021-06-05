@@ -19,6 +19,7 @@ import com.iplant.R
 import com.iplant.data.Plant
 import com.iplant.data.images.PlantImage
 import com.iplant.databinding.ActivityMainBinding
+import java.io.File
 import java.time.LocalDate
 import java.time.Period.between
 
@@ -86,8 +87,8 @@ class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener,
         startActivity(intent)
     }
 
-    override suspend fun getLastPhoto(plant: Plant): PlantImage? {
-        return plantViewModel.getLastImage(plant)
+    override suspend fun getLastPhoto(plant: Plant): File? {
+        return plantViewModel.getLastImage(plant)?.getFile(this)
     }
 
     override suspend fun checkIfNeedsWatering(plant: Plant): Boolean {

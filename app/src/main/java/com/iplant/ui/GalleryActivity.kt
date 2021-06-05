@@ -35,9 +35,9 @@ class GalleryActivity : AppCompatActivity() {
                 val data: ArrayList<TimelineObject> = arrayListOf()
                 images.forEach {
                     data.add(object : TimelineObject {
-                        override fun getTimestamp() = it.timestamp
-                        override fun getTitle() = it.title
-                        override fun getImageUrl() = it.imageUrl
+                        override fun getTimestamp() = it.getTimestamp()
+                        override fun getTitle() = it.getTitle()
+                        override fun getImageUrl() = it.getFile(this@GalleryActivity).toURI().toString()
                     })
                 }
                 timeline.setData(data, TimelineGroupType.DAY)
