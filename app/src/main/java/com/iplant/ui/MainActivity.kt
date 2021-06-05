@@ -2,7 +2,6 @@ package com.iplant.ui
 
 import android.Manifest
 import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -19,7 +18,7 @@ import com.iplant.PlantsApplication
 import com.iplant.R
 import com.iplant.data.Plant
 import com.iplant.databinding.ActivityMainBinding
-import com.iplant.notification.ReminderBroadcast
+import com.iplant.notification.NotificationsMaker
 import java.io.File
 import java.time.LocalDate
 import java.time.Period.between
@@ -34,47 +33,12 @@ class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener,
     private val addPlant = registerForActivityResult(AddingContract()) {
         it?.let {
             plantViewModel.insert(it)
-            val intentWatering = Intent(this, ReminderBroadcast::class.java)
-            intentWatering.putExtra("message", "Your plant needs watering")
-            intentWatering.putExtra("id", it.id.toInt() * 2)
-            intentWatering.putExtra("name", it.caressing_name)
-
-            val pendingIntentWatering =
-                PendingIntent.getBroadcast(
-                    this,
-                    0,
-                    intentWatering,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-                )
-
-            val intentFertilizing = Intent(this, ReminderBroadcast::class.java)
-            intentFertilizing.putExtra("message", "Your plant needs fertilizing")
-            intentFertilizing.putExtra("id", it.id.toInt() * 2 + 1)
-            intentFertilizing.putExtra("name", it.caressing_name)
-
-            val pendingIntentFertilizing =
-                PendingIntent.getBroadcast(
-                    this,
-                    1,
-                    intentFertilizing,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-                )
 
             val alarmManager: AlarmManager =
-                getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
+                getSystemService(ALARM_SERVICE) as AlarmManager
 
-            alarmManager.set(
-                AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis(),
-                pendingIntentWatering
-            )
-
-            alarmManager.set(
-                AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis(),
-                pendingIntentFertilizing
-            )
-
+            NotificationsMaker.makeWateringNotification(this, it, alarmManager)
+            NotificationsMaker.makeFertilizingNotification(this, it, alarmManager)
         }
     }
 

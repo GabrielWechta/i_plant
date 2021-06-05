@@ -1,11 +1,13 @@
 package com.iplant.notification
 
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.iplant.R
+import com.iplant.ui.MainActivity
 
 class ReminderBroadcast : BroadcastReceiver() {
 
@@ -14,24 +16,18 @@ class ReminderBroadcast : BroadcastReceiver() {
 
         val plantName = intent.getStringExtra("name")
         val notificationId = intent.getIntExtra("id", 0)
+        val notificationClickIntent =  Intent(context, MainActivity::class.java)
+        val notificationClickPendingIntent = PendingIntent.getActivity(context, 2137, notificationClickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         val message = intent.getStringExtra("message")
         val builder = NotificationCompat.Builder(context, "upcoming")
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(plantName)
             .setContentText(message)
+            .setContentIntent(notificationClickPendingIntent)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
 
         val notificationManger = NotificationManagerCompat.from(context)
         notificationManger.notify(notificationId, builder.build())
     }
-
-//    USE IN FUTURE TO SET NOTIFICATION
-
-//    var intent = Intent(this, ReminderBroadcast::class.java)
-//    var pendingIntent = PendingIntent.getBroadcast(this,0,intent,0)
-//
-//
-//    var alarmManager : AlarmManager = getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
-//    alarmManager.set(AlarmManager.RTC_WAKEUP, ZonedDateTime.of(item.date, ZoneId.systemDefault()).toInstant().toEpochMilli()-3600000,pendingIntent)
-//    finish()
 }
