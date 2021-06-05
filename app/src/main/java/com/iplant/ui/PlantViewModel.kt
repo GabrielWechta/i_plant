@@ -35,8 +35,8 @@ class PlantViewModel(private val repository: PlantRepository) : ViewModel() {
         repository.addFertilizingNote(plant, date)
     }
 
-    fun addImage(plant: Plant, date: LocalDateTime, imgName:String) = viewModelScope.launch {
-        repository.addImage(plant,date,imgName)
+    fun addImage(plant: Plant, date: LocalDateTime, imgName: String) = viewModelScope.launch {
+        repository.addImage(plant, date, imgName)
     }
 
     fun insertData(it: DataModel) = viewModelScope.launch  {

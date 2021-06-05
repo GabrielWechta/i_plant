@@ -19,6 +19,8 @@
         android:theme="@style/Theme.IPlant">
         <activity android:name=".ui.GalleryActivity" />
         <activity android:name=".MediaAPI.CameraActivity" />
+        <activity android:name=".ui.LifeAnimationActivity"></activity>
+        <activity android:name=".MediaAPI.CameraActivity" />
         <activity android:name=".ui.InfoActivity" />
         <activity android:name=".ui.AddEditPlantActivity" />
         <activity android:name=".ui.MainActivity">
