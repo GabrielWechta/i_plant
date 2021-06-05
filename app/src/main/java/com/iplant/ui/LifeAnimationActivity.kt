@@ -9,6 +9,7 @@ import android.view.animation.AnimationUtils
 import android.widget.FrameLayout
 import android.widget.ImageSwitcher
 import android.widget.ImageView
+import android.widget.ViewSwitcher
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
@@ -23,7 +24,6 @@ class LifeAnimationActivity : AppCompatActivity() {
     private val viewModel: PlantViewModel by viewModels {
         PlantViewModelFactory((application as PlantsApplication).repository)
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,12 +42,11 @@ class LifeAnimationActivity : AppCompatActivity() {
             val myView = ImageView(applicationContext)
             myView.scaleType = ImageView.ScaleType.FIT_CENTER
             myView.layoutParams = FrameLayout.LayoutParams(
-                LayoutParams.WRAP_CONTENT,
-                LayoutParams.WRAP_CONTENT
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT
             )
             myView
         }
-
 
         val plant: Plant? = intent.getParcelableExtra("plant")
         if (plant == null) {
@@ -64,10 +63,10 @@ class LifeAnimationActivity : AppCompatActivity() {
                         imageSwitcher.setImageURI(
                             sortedImages[index].getFile(this@LifeAnimationActivity).toUri()
                         )
-                        handler.postDelayed(this, 1000)
+                        handler.postDelayed(this, 3000)
                     }
                 }
-                handler.postDelayed(runnable, 1000)
+                handler.postDelayed(runnable, 10)
 
             })
         }
