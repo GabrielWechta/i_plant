@@ -1,6 +1,8 @@
 package com.iplant.ui
 
 import android.Manifest
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -19,9 +21,13 @@ import com.iplant.R
 import com.iplant.data.Plant
 import com.iplant.data.images.PlantImage
 import com.iplant.databinding.ActivityMainBinding
+import com.iplant.notification.ReminderBroadcast
 import java.io.File
 import java.time.LocalDate
 import java.time.Period.between
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.util.*
 
 
 class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener,
@@ -32,6 +38,20 @@ class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener,
     private val addPlant = registerForActivityResult(AddingContract()) {
         it?.let {
             plantViewModel.insert(it)
+            var intent = Intent(this, ReminderBroadcast::class.java)
+            intent.putExtra("plant", it)
+            var pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+
+
+            var alarmManager: AlarmManager =
+                getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP,
+                Calendar.getInstance().timeInMillis,
+                pendingIntent
+            )
+            finish()
+
         }
     }
 
@@ -77,6 +97,7 @@ class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener,
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL)
         }
     }
+
     fun hasPermissions(context: Context, vararg permissions: String): Boolean = permissions.all {
         ActivityCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
     }
@@ -127,4 +148,6 @@ class MainActivity : AppCompatActivity(), PlantListAdapter.PlantClickListener,
             else -> false
         }
     }
+
+
 }

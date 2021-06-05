@@ -9,14 +9,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.iplant.R
+import com.iplant.data.Plant
 
 class ReminderBroadcast : BroadcastReceiver() {
 
     /** Receive and build notification */
     override fun onReceive(context: Context, intent: Intent ) {
+
+        var plant = intent.getParcelableExtra<Plant>("plant")
         var builder = NotificationCompat.Builder(context, R.string.reminder_channel.toString())
             .setSmallIcon(R.drawable.ic_notyfication)
-            .setContentTitle("Title")
+            .setContentTitle(plant?.caressing_name)
             .setContentText("Description")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
