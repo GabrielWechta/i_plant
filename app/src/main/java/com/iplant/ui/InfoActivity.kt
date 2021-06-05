@@ -3,8 +3,10 @@ package com.iplant.ui
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
@@ -34,12 +36,12 @@ import com.iplant.data.fertilizing.Fertilizing
 import com.iplant.data.images.PlantImage
 import com.iplant.data.watering.Watering
 import com.iplant.databinding.ActivityInfoBinding
+import java.io.File
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Period.between
 import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
@@ -94,9 +96,20 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         binding = ActivityInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
         plant = intent.getParcelableExtra("plant")
-        var photoButton: Button = findViewById<Button>(R.id.photo_button);
-        photoButton.setOnClickListener { view: View ->
+        binding.photoButton.setOnClickListener {
             addPicture.launch(lastImg?.image_name)
+        }
+        plant?.let {
+            viewModel.observeLastImage(it).observe(this, { images ->
+                if (images.isNotEmpty()) {
+                    val photo = images[0].getFile(this)
+
+                    Glide.with(this)
+                        .load(photo)
+                        .centerCrop()
+                        .into(binding.imageView)
+                }
+            })
         }
         binding.editButton.setOnClickListener {
             PopupMenu(this, it).apply {
@@ -130,6 +143,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 commonName.text = it.common_name
                 buttonWater.setOnClickListener {
                     datePicker.addOnPositiveButtonClickListener {
+                        datePicker.clearOnPositiveButtonClickListeners()
                         val date = LocalDate.ofEpochDay(it / (1000 * 3600 * 24))
                         viewModel.addWateringNote(plant, date)
                         Toast.makeText(
@@ -143,6 +157,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
 
                 buttonFertilize.setOnClickListener {
                     datePicker.addOnPositiveButtonClickListener {
+                        datePicker.clearOnPositiveButtonClickListeners()
                         val date = LocalDate.ofEpochDay(it / (1000 * 3600 * 24))
                         viewModel.addFertilizingNote(plant, date)
                         Toast.makeText(
@@ -158,9 +173,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     datePicker.show(supportFragmentManager, "fertilizing")
                 }
 
-
-
-                viewModel.observeLastWatering(plant).observe(this@InfoActivity, Observer {
+                viewModel.observeLastWatering(plant).observe(this@InfoActivity, {
                     if (it.isNotEmpty()) {
                         lastWart = it[0]
                         val watering = it[0]
@@ -177,18 +190,8 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                         lastWateredText.text = getString(R.string.last_watered, "never")
                     }
                 })
-                viewModel.observeLastImage(plant).observe(this@InfoActivity, Observer {
-                    if (it.isNotEmpty()) {
-                        lastImg = it[0]
-                        val view =  findViewById<ImageView>(R.id.imageView)
-                        val imgFile = lastImg?.getFile(this@InfoActivity)
-                        if(imgFile != null && imgFile.exists()) {
-                            Glide.with(this@InfoActivity).load(imgFile).into(view);
-                        }
-                    }
-                })
 
-                viewModel.observeLastFertilizing(plant).observe(this@InfoActivity, Observer {
+                viewModel.observeLastFertilizing(plant).observe(this@InfoActivity, {
                     if (it.isNotEmpty()) {
                         lastFert = it[0]
                         val fertilizing = it[0]
@@ -217,7 +220,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     historyCalendar.setMinimumDate(minDate)
                 }
 
-                viewModel.getAllEvents(plant).observe(this@InfoActivity, Observer { plantEvents ->
+                viewModel.getAllEvents(plant).observe(this@InfoActivity, { plantEvents ->
                     val eventMap: HashMap<LocalDate, PlantEvent> = hashMapOf()
                     plantEvents.forEach {
                         val date = it.getEventDate()
@@ -245,7 +248,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 })
 
                 viewModel.getAllFertilizing(plant)
-                    .observe(this@InfoActivity, Observer { plantFertilizing ->
+                    .observe(this@InfoActivity, { plantFertilizing ->
                         val fertilizingDates = arrayListOf<LocalDate>()
                         var maxFertilizingDistance = 0
                         plantFertilizing.forEach {
@@ -297,7 +300,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                                 .setAnimationDuration(4000) // Set Animation Duration
                                 .build()
                         )
-                        Handler().postDelayed(Runnable {
+                        Handler().postDelayed({
                             fertilizingGraphView.setData(
                                 fertilizingDates.size,
                                 maxFertilizingDistance,
@@ -307,7 +310,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                     })
 
                 viewModel.getAllWatering(plant)
-                    .observe(this@InfoActivity, Observer { plantWatering ->
+                    .observe(this@InfoActivity, { plantWatering ->
                         val wateringDates = arrayListOf<LocalDate>()
                         var maxWateringDistance = 0
                         plantWatering.forEach {
@@ -406,10 +409,12 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                 true
             }
             R.id.menu_gallery -> {
+                val intent = Intent(this, GalleryActivity::class.java)
+                intent.putExtra("plant", plant)
+                startActivity(intent)
                 true
             }
             R.id.menu_export -> {
-
                 if (plant != null) {
                     exportPlant.launch(jsp.generateName(plant!!))
                 }

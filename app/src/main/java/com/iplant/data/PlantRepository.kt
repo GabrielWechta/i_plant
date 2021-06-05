@@ -45,18 +45,20 @@ class PlantRepository(private val database: PlantDatabase) {
     }
 
     @WorkerThread
-    suspend fun addImage(plant: Plant,date: LocalDateTime,imageName: String)
-    {
-        plantImagesDao.insert(PlantImage(plant.id,date,imageName))
+    suspend fun addImage(plant: Plant, date: LocalDateTime, imageName: String) {
+        plantImagesDao.insert(PlantImage(plant.id, date, imageName))
     }
 
-    fun observeLastImage(plant:Plant):LiveData<List<PlantImage>>
-    {
+    fun observeLastImage(plant: Plant): LiveData<List<PlantImage>> {
         return plantImagesDao.observeLastImage(plant.id)
     }
 
-    fun observeAllImages(plant:Plant):LiveData<List<PlantImage>>
-    {
+    suspend fun getLastImage(plant: Plant): PlantImage? {
+        val image = plantImagesDao.getLastImage(plant.id)
+        return if (image.isNotEmpty()) image[0] else null
+    }
+
+    fun observeAllImages(plant: Plant): LiveData<List<PlantImage>> {
         return plantImagesDao.observeAllImages(plant.id)
     }
 

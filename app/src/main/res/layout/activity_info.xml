@@ -7,8 +7,6 @@
     android:background="?colorPrimaryVariant">
 
 
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,23 +21,13 @@
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="400dp"
                 android:layout_gravity="center"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/main_photo"
-                android:src="@drawable/zz"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:id = "@+id/photo_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Update Image"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView"
-                app:layout_constraintEnd_toEndOf="parent">
-
-            </Button>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <RelativeLayout
@@ -65,6 +53,22 @@
                 android:gravity="center"
                 android:text="ZZ Plant"
                 android:textSize="18sp" />
+
+            <ImageButton
+                android:id="@+id/photo_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/plant_nick"
+                android:layout_alignBottom="@+id/plant_nick"
+                android:layout_alignParentStart="true"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/ic_photo"
+                android:tint="@color/text_green"
+                android:background="?android:attr/selectableItemBackground"
+
+                >
+            </ImageButton>
 
             <ImageButton
                 android:id="@+id/edit_button"

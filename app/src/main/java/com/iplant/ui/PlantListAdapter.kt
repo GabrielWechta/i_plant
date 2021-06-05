@@ -2,19 +2,24 @@ package com.iplant.ui
 
 import android.content.Context
 import android.os.DeadObjectException
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.iplant.PlantsApplication
 import com.iplant.R
 import com.iplant.data.Plant
 import com.iplant.data.fertilizing.Fertilizing
+import com.iplant.data.images.PlantImage
 import com.iplant.data.watering.Watering
 import com.iplant.databinding.RecyclerviewItemBinding
 import kotlinx.coroutines.GlobalScope
@@ -30,6 +35,7 @@ class PlantListAdapter(
 
     interface PlantClickListener {
         fun onPlantClick(plant: Plant)
+        suspend fun getLastPhoto(plant: Plant): PlantImage?
         suspend fun checkIfNeedsWatering(plant: Plant): Boolean
         suspend fun checkIfNeedsFertilizing(plant: Plant): Boolean
     }
@@ -59,20 +65,27 @@ class PlantListAdapter(
                 cardNick.text = plant.caressing_name
                 cardCommonName.text =
                     context.getString(R.string.common_name_placeholder, plant.common_name)
-                GlobalScope.launch {
+                var photo: PlantImage? = null
+                val job = GlobalScope.launch {
                     val needsWatering = clickListener.checkIfNeedsWatering(plant)
                     val needsFertilizing = clickListener.checkIfNeedsFertilizing(plant)
                     status = status.getStatus(plant, needsWatering, needsFertilizing)
                     updateStatusMessage()
+                    photo = clickListener.getLastPhoto(plant)
+                    Handler(context.mainLooper).post {
+                        photo?.let {
+                            Glide.with(context).load(it.image_name).centerCrop().into(cardImage)
+                        }
+                    }
                 }
             }
             itemView.setOnClickListener {
                 clickListener.onPlantClick(plant)
             }
-
         }
 
-        fun updateStatusMessage() {
+
+        private fun updateStatusMessage() {
             binding.cardStatus.text = when (status) {
                 Status.OK -> ""
                 Status.DEAD -> context.getString(
