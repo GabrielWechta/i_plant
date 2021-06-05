@@ -1,6 +1,7 @@
 package com.iplant.ui
 
 import android.app.Activity
+import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -31,6 +32,7 @@ import com.iplant.data.fertilizing.Fertilizing
 import com.iplant.data.images.PlantImage
 import com.iplant.data.watering.Watering
 import com.iplant.databinding.ActivityInfoBinding
+import com.iplant.notification.NotificationsMaker
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Period.between
@@ -83,7 +85,6 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
         }
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -141,6 +142,11 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                         datePicker.clearOnPositiveButtonClickListeners()
                         val date = LocalDate.ofEpochDay(it / (1000 * 3600 * 24))
                         viewModel.addWateringNote(plant, date)
+                        NotificationsMaker.makeWateringNotification(
+                            this@InfoActivity,
+                            plant,
+                            getSystemService(ALARM_SERVICE) as AlarmManager
+                        )
                         Toast.makeText(
                             this@InfoActivity,
                             "Added a watering note on " + date.format(DateTimeFormatter.ofPattern("dd/MM/uu")),
@@ -155,6 +161,11 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                         datePicker.clearOnPositiveButtonClickListeners()
                         val date = LocalDate.ofEpochDay(it / (1000 * 3600 * 24))
                         viewModel.addFertilizingNote(plant, date)
+                        NotificationsMaker.makeFertilizingNotification(
+                            this@InfoActivity,
+                            plant,
+                            getSystemService(ALARM_SERVICE) as AlarmManager
+                        )
                         Toast.makeText(
                             this@InfoActivity,
                             "Added a fertilizing note on " + date.format(
