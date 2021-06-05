@@ -1,5 +1,6 @@
 package com.iplant.data
 
+import android.util.Log
 import androidx.room.TypeConverter
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -11,7 +12,15 @@ class Converters
         return if (dateString == null) {
             null
         } else {
-            LocalDate.parse(dateString)
+            try {
+                return   LocalDate.parse(dateString)
+            }
+            catch (e: Exception)
+            {
+                Log.println(Log.ERROR,"",e.toString())
+                null
+            }
+
         }
     }
 
@@ -24,7 +33,16 @@ class Converters
         return if (dateString == null) {
             null
         } else {
-            LocalDateTime.parse(dateString)
+            try {
+               return LocalDateTime.parse(dateString)
+            }
+            catch (e: Exception)
+            {
+                Log.println(Log.ERROR,"",e.toString())
+                null
+            }
+
+
         }
     }
 

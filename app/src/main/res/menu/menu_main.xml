@@ -6,4 +6,8 @@
         android:title="@string/hide_dead_plants"
         android:checkable="true"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/menu_import"
+        android:title="Import"
+/>
 </menu>

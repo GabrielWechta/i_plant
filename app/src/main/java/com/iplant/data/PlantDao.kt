@@ -1,7 +1,6 @@
 package com.iplant.data
 
 import androidx.room.*
-import com.iplant.data.Plant
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
@@ -10,6 +9,9 @@ interface PlantDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(plant: Plant)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertWithId(plant: Plant):Long
 
     @Update
     suspend fun update(plant: Plant)
