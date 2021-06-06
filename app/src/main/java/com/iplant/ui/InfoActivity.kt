@@ -302,7 +302,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                                 .setGuidelineColor(R.color.creme) // Set color of the visible guidelines.
                                 .setNoDataMsg(" No Data ") // Message when no data is provided to the view.
                                 .setxAxisScaleTextColor(R.color.creme) // Set X axis scale text color.
-                                .setyAxisScaleTextColor(R.color.creme) // Set Y axis scale text color
+                                .setyAxisScaleTextColor(R.color.white) // Set Y axis scale text color
                                 .setAnimationDuration(4000) // Set Animation Duration
                                 .build()
                         )
@@ -364,7 +364,7 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                                 .setGuidelineColor(R.color.creme)
                                 .setNoDataMsg(" No Data ")
                                 .setxAxisScaleTextColor(R.color.creme)
-                                .setyAxisScaleTextColor(R.color.creme)
+                                .setyAxisScaleTextColor(R.color.white)
                                 .setAnimationDuration(2500)
                                 .build()
                         )
