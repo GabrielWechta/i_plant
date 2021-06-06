@@ -1,6 +1,5 @@
 package com.iplant.MediaAPI
 
-import android.R.id.message
 import android.app.Dialog
 import android.content.Context
 import android.net.Uri
@@ -8,6 +7,7 @@ import android.util.Log
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
 import com.iplant.data.Plant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -21,9 +21,12 @@ import java.io.File
 
 
 class TwitterToken() {
+    enum class tweet {
+        LOGGED,TWEETED,ERROR
+    }
     lateinit var twitter: Twitter
     lateinit var twitterDialog: Dialog
-    fun getRequestToken(context : Context) {
+    fun getRequestToken(context: Context) {
         GlobalScope.launch(Dispatchers.Default) {
             val builder = ConfigurationBuilder()
                 .setDebugEnabled(true)
@@ -35,7 +38,7 @@ class TwitterToken() {
             try {
                 val requestToken = twitter.oAuthRequestToken
                 withContext(Dispatchers.Main) {
-                    setupTwitterWebviewDialog(requestToken.authorizationURL,context)
+                    setupTwitterWebviewDialog(requestToken.authorizationURL, context)
                 }
             } catch (e: IllegalStateException) {
                 Log.e("ERROR: ", e.toString())
@@ -43,7 +46,7 @@ class TwitterToken() {
         }
     }
 
-    fun setupTwitterWebviewDialog(url: String,context: Context) {
+    fun setupTwitterWebviewDialog(url: String, context: Context) {
         twitterDialog = Dialog(context)
         val webView = WebView(context)
         webView.isVerticalScrollBarEnabled = false
@@ -92,66 +95,68 @@ class TwitterToken() {
             val oauthVerifier = uri.getQueryParameter("oauth_verifier") ?: ""
             GlobalScope.launch(Dispatchers.Main) {
                 try {
-                        withContext(Dispatchers.IO) { twitter.getOAuthAccessToken(oauthVerifier) }
-                }
-                catch(e:Exception )
-                {
+                    withContext(Dispatchers.IO) { twitter.getOAuthAccessToken(oauthVerifier) }
+                } catch (e: Exception) {
                     twitterToken = null
                 }
             }
         }
     }
-    companion object{
-         var twitterToken: TwitterToken? = null
-        fun checkToken(context:Context): Boolean
-        {
-            if (twitterToken == null)
-            {
+
+    companion object {
+        var twitterToken: TwitterToken? = null
+        fun checkToken(context: Context): Boolean {
+            if (twitterToken == null) {
                 twitterToken = TwitterToken()
                 twitterToken?.getRequestToken(context)
                 return false
             }
             return true
         }
-        fun toMessage(plant: Plant):String
-        {
-            return plant.toString()
+
+        fun toMessage(plant: Plant): String {
+            if (plant.death_date == null) {
+                return plant.caressing_name + " is a very good boy."
+            }
+            return "Rest in pepperoni " + plant.caressing_name + ".\n" + plant.adding_date + " to " + plant.death_date
         }
-        fun tryTweet(plant: Plant,img: File,context:Context)
-        {
-            if(checkToken(context))
-            {
+
+        fun tryTweet(plant: Plant, img: File?, context: Context):tweet {
+            if (img != null && img.exists()) {
+                if (checkToken(context)) {
+                    GlobalScope.launch(Dispatchers.IO) {
+                        try {
+                            val status = StatusUpdate(toMessage(plant))
+                            status.setMedia(img)
+                            twitterToken?.twitter?.updateStatus(status)
+
+                        } catch (e: Exception) {
+                            Log.println(Log.ERROR, null, e.toString())
+                        }
+                    }
+                    return  tweet.TWEETED
+                }
+                return tweet.LOGGED
+            } else return tryTweet(plant, context)
+        }
+
+        fun tryTweet(plant: Plant, context: Context):tweet {
+
+            if (checkToken(context)) {
                 GlobalScope.launch(Dispatchers.IO) {
                     try {
                         val status = StatusUpdate(toMessage(plant))
-                        status.setMedia(img)
                         twitterToken?.twitter?.updateStatus(status)
-                    }
-                    catch(e:Exception )
-                    {
+
+                    } catch (e: Exception) {
+                        Log.println(Log.ERROR, null, e.toString())
 
                     }
                 }
-
+            return  tweet.TWEETED
             }
+            return tweet.LOGGED
+
         }
-        fun  tryTweet(plant: Plant,context:Context) {
-
-            if(checkToken(context))
-             {
-                 GlobalScope.launch(Dispatchers.IO) {
-                     try {
-                         val status = StatusUpdate(toMessage(plant))
-                         twitterToken?.twitter?.updateStatus(status)
-                     }
-                     catch(e:Exception )
-                     {
-
-                     }
-                 }
-
-             }
-
     }
-}
 }
