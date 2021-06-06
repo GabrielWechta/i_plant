@@ -33,6 +33,8 @@ import com.iplant.data.images.PlantImage
 import com.iplant.data.watering.Watering
 import com.iplant.databinding.ActivityInfoBinding
 import com.iplant.notification.NotificationsMaker
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Period.between
@@ -91,9 +93,33 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
         binding = ActivityInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
         plant = intent.getParcelableExtra("plant")
+
         binding.photoButton.setOnClickListener {
             addPicture.launch(lastImg?.image_name)
         }
+        binding.editButton.setOnClickListener {
+            PopupMenu(this, it).apply {
+                setOnMenuItemClickListener(this@InfoActivity)
+                inflate(R.menu.menu_plant)
+                show()
+            }
+        }
+        if (plant == null) {
+            val plantId = intent.getLongExtra("plant_id", -1)
+            if (plantId < 0) finish()
+            GlobalScope.launch {
+                plant = viewModel.getPlantById(plantId)
+                Handler(mainLooper).post {
+                    bindPlantData(plant)
+                }
+            }
+        }
+        else {
+            bindPlantData(plant)
+        }
+    }
+
+    private fun bindPlantData(plant: Plant?) {
         plant?.let {
             viewModel.observeLastImage(it).observe(this, { images ->
                 if (images.isNotEmpty()) {
@@ -106,19 +132,6 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
                         .into(binding.imageView)
                 }
             })
-        }
-        binding.editButton.setOnClickListener {
-            PopupMenu(this, it).apply {
-                setOnMenuItemClickListener(this@InfoActivity)
-                inflate(R.menu.menu_plant)
-                show()
-            }
-        }
-        bindPlantData(plant)
-    }
-
-    private fun bindPlantData(plant: Plant?) {
-        plant?.let {
             val calendarConstraints = CalendarConstraints.Builder()
                 .setValidator(
                     CompositeDateValidator.allOf(
@@ -434,13 +447,13 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
             R.id.menu_share -> {
                 if (plant != null) {
-                    when(TwitterToken.tryTweet(plant!!,lastImg?.getFile(this), this)) {
+                    when (TwitterToken.tryTweet(plant!!, lastImg?.getFile(this), this)) {
                         TwitterToken.tweet.TWEETED ->
                             Toast.makeText(this, "Tweeted!", Toast.LENGTH_SHORT)
                                 .show()
                         TwitterToken.tweet.LOGGED ->
-                          //  Toast.makeText(this, "Logged!", Toast.LENGTH_SHORT)
-                               // .show()
+                            //  Toast.makeText(this, "Logged!", Toast.LENGTH_SHORT)
+                            // .show()
                         {
 
                         }

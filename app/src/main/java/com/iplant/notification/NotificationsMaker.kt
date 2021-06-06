@@ -18,6 +18,7 @@ object NotificationsMaker {
         intentWatering.putExtra("message", "Your plant needs watering")
         intentWatering.putExtra("id", plant.id.toInt() * 2)
         intentWatering.putExtra("name", plant.caressing_name)
+        intentWatering.putExtra("plant_id", plant.id)
 
         val pendingIntentWatering =
             PendingIntent.getBroadcast(
@@ -41,6 +42,7 @@ object NotificationsMaker {
         intentFertilizing.putExtra("message", "Your plant needs fertilizing")
         intentFertilizing.putExtra("id", plant.id.toInt() * 2 + 1)
         intentFertilizing.putExtra("name", plant.caressing_name)
+        intentFertilizing.putExtra("plant_id", plant.id)
 
         val pendingIntentFertilizing =
             PendingIntent.getBroadcast(

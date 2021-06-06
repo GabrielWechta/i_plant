@@ -126,4 +126,9 @@ class PlantRepository(private val database: PlantDatabase) {
         }
         return combined
     }
+
+    fun getPlantById(plantId: Long): Plant? {
+        val plants = plantDao.getPlantById(plantId)
+        return if (plants.isNotEmpty()) plants[0] else null
+    }
 }

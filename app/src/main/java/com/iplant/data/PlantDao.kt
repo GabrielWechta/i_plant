@@ -24,4 +24,7 @@ interface PlantDao {
 
     @Query("SELECT fertilizing_date FROM plant_table INNER JOIN fertilizing_table ON plant_table.id = fertilizing_table.plant_id WHERE plant_table.id = :plantId")
     fun getAllFertilizingDatesByPlantId(plantId: Long): List<LocalDate>
+
+    @Query("SELECT * FROM plant_table WHERE plant_table.id = :plantId")
+    fun getPlantById(plantId: Long): List<Plant>
 }

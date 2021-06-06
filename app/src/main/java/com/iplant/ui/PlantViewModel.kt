@@ -43,6 +43,8 @@ class PlantViewModel(private val repository: PlantRepository) : ViewModel() {
         repository.insertData(it)
     }
 
+    fun getPlantById(plantId: Long) = repository.getPlantById(plantId)
+
     fun observeLastImage(plant: Plant) = repository.observeLastImage(plant)
     suspend fun getLastImage(plant: Plant) = repository.getLastImage(plant)
     fun observeAllImages(plant: Plant) = repository.observeAllImages(plant)
