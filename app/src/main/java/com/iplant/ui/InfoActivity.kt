@@ -428,7 +428,23 @@ class InfoActivity : AppCompatActivity(), PopupMenu.OnMenuItemClickListener {
             }
             R.id.menu_share -> {
                 if (plant != null) {
-                    TwitterToken.tryTweet(plant!!, this)
+                    when(TwitterToken.tryTweet(plant!!,lastImg?.getFile(this), this)) {
+                        TwitterToken.tweet.TWEETED ->
+                            Toast.makeText(this, "Tweeted!", Toast.LENGTH_SHORT)
+                                .show()
+                        TwitterToken.tweet.LOGGED ->
+                          //  Toast.makeText(this, "Logged!", Toast.LENGTH_SHORT)
+                               // .show()
+                        {
+
+                        }
+                        TwitterToken.tweet.ERROR ->
+                            Toast.makeText(this, "Error!", Toast.LENGTH_SHORT)
+                                .show()
+
+                    }
+
+
                 }
                 true
             }
